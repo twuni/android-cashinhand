@@ -3,13 +3,13 @@ package org.twuni.money.wallet.activity;
 import java.util.List;
 
 import org.twuni.money.wallet.R;
-import org.twuni.money.wallet.exception.InsufficientFunds;
-import org.twuni.money.wallet.exception.ManyExceptions;
-import org.twuni.money.wallet.exception.NetworkError;
-import org.twuni.money.wallet.model.Bank;
-import org.twuni.money.wallet.model.Dollar;
-import org.twuni.money.wallet.model.Vault;
-import org.twuni.money.wallet.util.JsonUtils;
+import org.twuni.money.bank.exception.InsufficientFunds;
+import org.twuni.money.bank.exception.ManyExceptions;
+import org.twuni.money.bank.exception.NetworkError;
+import org.twuni.money.bank.model.Bank;
+import org.twuni.money.bank.model.Dollar;
+import org.twuni.money.bank.model.Vault;
+import org.twuni.money.bank.util.JsonUtils;
 
 import android.app.Activity;
 import android.content.Intent;
