@@ -60,7 +60,7 @@ public class MainActivity extends Activity {
 		return String.format( "$%.2f", Double.valueOf( balance / 100.0 ) );
 	}
 
-	public void launchScan( View view ) {
+	public void launchDeposit( View view ) {
 		IntentIntegrator.initiateScan( this );
 	}
 

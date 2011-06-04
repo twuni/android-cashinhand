@@ -37,8 +37,6 @@
 		<activity android:name="activity.nfc.NFCScanActivity" android:label="@string/nfc_read">
 			<intent-filter>
 				<action android:name="org.twuni.money.wallet.action.RECEIVE_MONEY"/>
-			</intent-filter>
-			<intent-filter>
 				<action android:name="android.nfc.action.NDEF_DISCOVERED"/>
 				<data android:mimeType="application/json+money"/>
 			</intent-filter>
