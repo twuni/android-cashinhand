@@ -13,4 +13,6 @@
     <string name="use_location">Use my location</string>
     <string name="notes">Notes</string>
     <string name="accept">Accept</string>
+    <string name="withdraw">Withdraw</string>
+    <string name="deposit">Deposit</string>
 </resources>

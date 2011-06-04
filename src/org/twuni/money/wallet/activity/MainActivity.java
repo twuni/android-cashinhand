@@ -2,18 +2,22 @@ package org.twuni.money.wallet.activity;
 
 import java.util.List;
 
-import org.twuni.money.wallet.R;
+import org.apache.http.client.HttpClient;
 import org.twuni.money.bank.exception.InsufficientFunds;
 import org.twuni.money.bank.exception.ManyExceptions;
 import org.twuni.money.bank.exception.NetworkError;
 import org.twuni.money.bank.model.Bank;
 import org.twuni.money.bank.model.Dollar;
+import org.twuni.money.bank.model.Treasury;
 import org.twuni.money.bank.model.Vault;
 import org.twuni.money.bank.util.JsonUtils;
+import org.twuni.money.bank.util.Locator;
+import org.twuni.money.wallet.R;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.http.AndroidHttpClient;
 import android.os.Bundle;
 import android.text.Editable;
 import android.view.View;
@@ -26,6 +30,41 @@ import com.google.zxing.integration.android.IntentResult;
 
 public class MainActivity extends Activity {
 
+	private final class SharedPreferencesVault implements Vault {
+
+	    private final SharedPreferences preferences;
+
+	    private SharedPreferencesVault( SharedPreferences preferences ) {
+		    this.preferences = preferences;
+	    }
+
+	    @Override
+	    public void save( List<Dollar> dollars ) {
+	    	preferences.edit().putString( Bank.class.getName(), JsonUtils.serialize( dollars ) ).commit();
+	    }
+
+	    @Override
+	    public List<Dollar> load() {
+	    	return JsonUtils.deserializeList( preferences.getString( Bank.class.getName(), "[]" ), Dollar.class );
+	    }
+
+	}
+
+	private final class TreasuryLocator implements Locator<Dollar, Treasury> {
+
+	    private final HttpClient client;
+
+	    private TreasuryLocator( HttpClient client ) {
+		    this.client = client;
+	    }
+
+	    @Override
+	    public Treasury lookup( Dollar dollar ) {
+	    	return new Treasury( client, dollar.getTreasury() );
+	    }
+
+	}
+
 	private Bank bank;
 
 	@Override
@@ -35,20 +74,9 @@ public class MainActivity extends Activity {
 		setContentView( R.layout.main );
 
 		final SharedPreferences preferences = getSharedPreferences( getClass().getName(), MODE_PRIVATE );
+		final HttpClient client = AndroidHttpClient.newInstance( "Android/Twuni", this );
 
-		bank = new Bank( new Vault() {
-
-			@Override
-			public void save( List<Dollar> dollars ) {
-				preferences.edit().putString( Bank.class.getName(), JsonUtils.serialize( dollars ) ).commit();
-			}
-
-			@Override
-			public List<Dollar> load() {
-				return JsonUtils.deserializeList( preferences.getString( Bank.class.getName(), "[]" ), Dollar.class );
-			}
-
-		} );
+		bank = new Bank( new SharedPreferencesVault( preferences ), new TreasuryLocator( client ) );
 
 	}
 

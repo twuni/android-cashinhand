@@ -1,21 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="fill_parent" android:layout_height="fill_parent" android:padding="10dip" android:orientation="vertical">
 
-	<RelativeLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="wrap_content" android:paddingBottom="5dip" android:paddingTop="5dip">
+	<RelativeLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:paddingBottom="5dip" android:paddingTop="5dip">
 		<TextView android:text="@string/balance" android:id="@+id/balanceLabel" android:layout_width="fill_parent" android:layout_height="wrap_content" android:paddingBottom="5dip" android:textStyle="bold"></TextView>
 		<TextView android:text="" android:id="@+id/balance" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_below="@id/balanceLabel" android:textSize="40dip"></TextView>
 	</RelativeLayout>
 
-	<RelativeLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="wrap_content" android:paddingBottom="5dip" android:paddingTop="5dip">
-		<TextView android:text="@string/make_payment" android:id="@+id/paymentLabel" android:layout_width="fill_parent" android:layout_height="wrap_content" android:paddingBottom="5dip" android:textStyle="bold"></TextView>
-		<TextView android:text="$" android:id="@+id/dollarPaymentAmount" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_below="@id/paymentLabel" android:textSize="40dip"></TextView>
-		<EditText android:text="" android:id="@+id/paymentAmount" android:inputType="numberDecimal" android:layout_height="wrap_content" android:layout_width="100dip" android:layout_toRightOf="@id/dollarPaymentAmount" android:layout_below="@id/paymentLabel"></EditText>
-		<Button android:text="@string/pay" android:onClick="launchPayment" android:id="@+id/payButton" android:layout_toRightOf="@id/paymentAmount" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_below="@id/paymentLabel"></Button>
-	</RelativeLayout>
-
-	<RelativeLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="wrap_content" android:paddingBottom="5dip" android:paddingTop="5dip">
-		<TextView android:text="@string/receive_money" android:id="@+id/scanMoneyLabel" android:layout_width="fill_parent" android:layout_height="wrap_content" android:paddingBottom="5dip" android:textStyle="bold"></TextView>
-		<Button android:text="@string/scan" android:onClick="launchScan" android:id="@+id/scanMoneyButton" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_below="@id/scanMoneyLabel"></Button>
+	<RelativeLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:paddingBottom="5dip" android:paddingTop="5dip">
+		<Button android:text="@string/deposit" android:onClick="launchScan" android:id="@+id/scanMoneyButton" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+		<Button android:text="@string/withdraw" android:onClick="launchPayment" android:id="@+id/payButton" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentRight="true"></Button>
+		<EditText android:text="" android:id="@+id/paymentAmount" android:inputType="numberDecimal" android:layout_height="wrap_content" android:layout_width="100dip" android:layout_toLeftOf="@id/payButton"></EditText>
 	</RelativeLayout>
 
 </LinearLayout>

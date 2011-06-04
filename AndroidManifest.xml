@@ -7,6 +7,15 @@
 				<category android:name="android.intent.category.LAUNCHER"/>
 			</intent-filter>
 		</activity>
+		<activity android:name=".activity.nfc.NFCReaderActivity" android:label="@string/wallet">
+			<intent-filter>
+				<action android:name="android.nfc.action.NDEF_DISCOVERED"/>
+				<data android:mimeType="application/json+money"/>
+			</intent-filter>
+		</activity>
 	</application>
 	<uses-permission android:name="android.permission.INTERNET"/>
+	<uses-permission android:name="android.permission.NFC"/>
+	<uses-sdk android:minSdkVersion="10"/>
+	<uses-feature android:name="android.hardware.nfc"/>
 </manifest>
