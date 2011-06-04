@@ -15,4 +15,8 @@
     <string name="accept">Accept</string>
     <string name="withdraw">Withdraw</string>
     <string name="deposit">Deposit</string>
+    <string name="nfc_read">NFC Read</string>
+    <string name="nfc_push">NFC Push</string>
+    <string name="qr_code_scan">QR Code Scan</string>
+    <string name="qr_code">QR Code</string>
 </resources>

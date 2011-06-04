@@ -1,18 +1,16 @@
 package org.twuni.money.wallet.activity;
 
-import java.util.List;
-
 import org.apache.http.client.HttpClient;
 import org.twuni.money.bank.exception.InsufficientFunds;
 import org.twuni.money.bank.exception.ManyExceptions;
 import org.twuni.money.bank.exception.NetworkError;
 import org.twuni.money.bank.model.Bank;
 import org.twuni.money.bank.model.Dollar;
-import org.twuni.money.bank.model.Treasury;
-import org.twuni.money.bank.model.Vault;
 import org.twuni.money.bank.util.JsonUtils;
-import org.twuni.money.bank.util.Locator;
 import org.twuni.money.wallet.R;
+import org.twuni.money.wallet.SharedPreferencesVault;
+import org.twuni.money.wallet.TreasuryLocator;
+import org.twuni.money.wallet.util.DebugUtils;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -23,47 +21,11 @@ import android.text.Editable;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 public class MainActivity extends Activity {
-
-	private final class SharedPreferencesVault implements Vault {
-
-	    private final SharedPreferences preferences;
-
-	    private SharedPreferencesVault( SharedPreferences preferences ) {
-		    this.preferences = preferences;
-	    }
-
-	    @Override
-	    public void save( List<Dollar> dollars ) {
-	    	preferences.edit().putString( Bank.class.getName(), JsonUtils.serialize( dollars ) ).commit();
-	    }
-
-	    @Override
-	    public List<Dollar> load() {
-	    	return JsonUtils.deserializeList( preferences.getString( Bank.class.getName(), "[]" ), Dollar.class );
-	    }
-
-	}
-
-	private final class TreasuryLocator implements Locator<Dollar, Treasury> {
-
-	    private final HttpClient client;
-
-	    private TreasuryLocator( HttpClient client ) {
-		    this.client = client;
-	    }
-
-	    @Override
-	    public Treasury lookup( Dollar dollar ) {
-	    	return new Treasury( client, dollar.getTreasury() );
-	    }
-
-	}
 
 	private Bank bank;
 
@@ -73,8 +35,8 @@ public class MainActivity extends Activity {
 		super.onCreate( savedInstanceState );
 		setContentView( R.layout.main );
 
-		final SharedPreferences preferences = getSharedPreferences( getClass().getName(), MODE_PRIVATE );
-		final HttpClient client = AndroidHttpClient.newInstance( "Android/Twuni", this );
+		SharedPreferences preferences = getSharedPreferences( getClass().getName(), MODE_PRIVATE );
+		HttpClient client = AndroidHttpClient.newInstance( "Android/Twuni", this );
 
 		bank = new Bank( new SharedPreferencesVault( preferences ), new TreasuryLocator( client ) );
 
@@ -87,7 +49,7 @@ public class MainActivity extends Activity {
 			bank.validate();
 		} catch( ManyExceptions exceptions ) {
 			for( Exception exception : exceptions.getExceptions() ) {
-				handleException( exception );
+				DebugUtils.handleException( this, exception );
 			}
 		}
 		TextView balance = (TextView) findViewById( R.id.balance );
@@ -110,9 +72,9 @@ public class MainActivity extends Activity {
 			}
 			IntentIntegrator.shareText( this, JsonUtils.serialize( bank.withdraw( value ) ) );
 		} catch( InsufficientFunds exception ) {
-			handleException( exception );
+			DebugUtils.handleException( this, exception );
 		} catch( NetworkError exception ) {
-			handleException( exception );
+			DebugUtils.handleException( this, exception );
 		}
 	}
 
@@ -129,11 +91,11 @@ public class MainActivity extends Activity {
 			try {
 				bank.deposit( JsonUtils.deserialize( contents, Dollar.class ) );
 			} catch( NetworkError exception ) {
-				handleException( exception );
+				DebugUtils.handleException( this, exception );
 			} catch( ClassCastException exception ) {
-				handleException( new IllegalArgumentException( "The barcode you scanned is not a valid dollar.", exception ) );
+				DebugUtils.handleException( this, new IllegalArgumentException( "The barcode you scanned is not a valid dollar.", exception ) );
 			} catch( Exception exception ) {
-				handleException( exception );
+				DebugUtils.handleException( this, exception );
 			}
 		}
 	}
@@ -146,10 +108,6 @@ public class MainActivity extends Activity {
 		} catch( NumberFormatException exception ) {
 			return 0;
 		}
-	}
-
-	private void handleException( Exception exception ) {
-		Toast.makeText( this, exception.getMessage(), Toast.LENGTH_SHORT ).show();
 	}
 
 }
