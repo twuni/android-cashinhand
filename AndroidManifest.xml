@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="org.twuni.money.wallet" android:versionCode="100000002" android:versionName="1.0.2">
 
+	<!-- Icon provided by pixel-mixer.com -->
 	<application android:icon="@drawable/icon" android:label="@string/wallet">
 
 		<activity android:name=".activity.MainActivity" android:label="@string/wallet">
