@@ -1,11 +1,15 @@
 package org.twuni.money.wallet.activity;
 
+import java.util.Arrays;
+import java.util.Set;
+
 import org.apache.http.client.HttpClient;
 import org.twuni.money.bank.exception.InsufficientFunds;
 import org.twuni.money.bank.exception.ManyExceptions;
 import org.twuni.money.bank.exception.NetworkError;
 import org.twuni.money.bank.model.Bank;
 import org.twuni.money.bank.model.Dollar;
+import org.twuni.money.bank.model.Treasury;
 import org.twuni.money.bank.util.JsonUtils;
 import org.twuni.money.wallet.R;
 import org.twuni.money.wallet.SharedPreferencesVault;
@@ -20,7 +24,11 @@ import android.net.http.AndroidHttpClient;
 import android.os.Bundle;
 import android.text.Editable;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -29,6 +37,7 @@ import com.google.zxing.integration.android.IntentResult;
 public class MainActivity extends Activity {
 
 	private Bank bank;
+	private Treasury treasury;
 
 	@Override
 	protected void onCreate( Bundle savedInstanceState ) {
@@ -43,11 +52,41 @@ public class MainActivity extends Activity {
 
 	}
 
+	private void setBalance( int balance ) {
+		String text = toCurrencyString( balance );
+		TextView view = (TextView) findViewById( R.id.balance );
+		view.setText( text );
+	}
+
+	private void setTreasuries( Set<Treasury> treasuries ) {
+		Spinner spinner = (Spinner) findViewById( R.id.treasury );
+		ArrayAdapter<Treasury> adapter = new ArrayAdapter<Treasury>( this, android.R.layout.simple_spinner_item, Arrays.asList( treasuries.toArray( new Treasury [0] ) ) );
+		adapter.setDropDownViewResource( android.R.layout.simple_spinner_dropdown_item );
+		spinner.setAdapter( adapter );
+		spinner.setOnItemSelectedListener( new OnItemSelectedListener() {
+
+			@Override
+			public void onItemSelected( AdapterView<?> parent, View view, int index, long id ) {
+				Treasury treasury = (Treasury) parent.getItemAtPosition( index );
+				MainActivity.this.treasury = treasury;
+				setBalance( bank.getBalance( treasury ) );
+			}
+
+			@Override
+			public void onNothingSelected( AdapterView<?> parent ) {
+				setBalance( bank.getBalance() );
+			}
+
+		} );
+
+	}
+
 	@Override
 	protected void onResume() {
 
 		super.onResume();
-		final Context context = this;
+
+		setTreasuries( bank.getTreasuries() );
 
 		new Thread() {
 
@@ -57,7 +96,7 @@ public class MainActivity extends Activity {
 					bank.validate();
 				} catch( ManyExceptions exceptions ) {
 					for( Exception exception : exceptions.getExceptions() ) {
-						handleException( context, exception );
+						handleException( MainActivity.this, exception );
 					}
 				}
 
@@ -65,8 +104,9 @@ public class MainActivity extends Activity {
 
 					@Override
 					public void run() {
-						TextView balance = (TextView) findViewById( R.id.balance );
-						balance.setText( toCurrencyString( bank.getBalance() ) );
+						if( treasury != null ) {
+							setBalance( bank.getBalance( treasury ) );
+						}
 					}
 
 				} );
@@ -82,12 +122,12 @@ public class MainActivity extends Activity {
 	}
 
 	public void launchDeposit( View view ) {
-		IntentIntegrator.initiateScan( this );
+		Intent intent = new Intent( Intent.ACTION_GET_CONTENT );
+		intent.setType( "application/json" );
+		startActivity( intent );
 	}
 
 	public void launchPayment( View view ) {
-
-		final Activity context = this;
 
 		new Thread() {
 
@@ -98,11 +138,11 @@ public class MainActivity extends Activity {
 					if( value <= 0 ) {
 						return;
 					}
-					IntentIntegrator.shareText( context, JsonUtils.serialize( bank.withdraw( value ) ) );
+					IntentIntegrator.shareText( MainActivity.this, JsonUtils.serialize( bank.withdraw( value, treasury ) ) );
 				} catch( InsufficientFunds exception ) {
-					handleException( context, exception );
+					handleException( MainActivity.this, exception );
 				} catch( NetworkError exception ) {
-					handleException( context, exception );
+					handleException( MainActivity.this, exception );
 				}
 			}
 
@@ -120,7 +160,6 @@ public class MainActivity extends Activity {
 	private void handleBarcodeScan( IntentResult result ) {
 
 		final String contents = result.getContents();
-		final Context context = this;
 
 		new Thread() {
 
@@ -130,11 +169,11 @@ public class MainActivity extends Activity {
 					try {
 						bank.deposit( JsonUtils.deserialize( contents, Dollar.class ) );
 					} catch( NetworkError exception ) {
-						handleException( context, exception );
+						handleException( MainActivity.this, exception );
 					} catch( ClassCastException exception ) {
-						handleException( context, new IllegalArgumentException( "The barcode you scanned is not a valid dollar.", exception ) );
+						handleException( MainActivity.this, new IllegalArgumentException( "The barcode you scanned is not a valid dollar.", exception ) );
 					} catch( Exception exception ) {
-						handleException( context, exception );
+						handleException( MainActivity.this, exception );
 					}
 				}
 			}
@@ -152,14 +191,18 @@ public class MainActivity extends Activity {
 			return 0;
 		}
 	}
-	
+
 	private void handleException( final Context context, final Exception exception ) {
+
 		runOnUiThread( new Runnable() {
+
 			@Override
 			public void run() {
 				DebugUtils.handleException( context, exception );
 			}
+
 		} );
+
 	}
 
 }

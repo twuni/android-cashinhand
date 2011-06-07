@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="wallet">Wallet</string>
-    <string name="save">Save</string>
-    <string name="spend">Spend</string>
-    <string name="make_payment">Make a payment</string>
-    <string name="receive_money">Receive money</string>
-    <string name="scan">Scan</string>
-    <string name="balance">Balance</string>
-    <string name="transactions">Transactions</string>
-    <string name="view_history">View transaction history</string>
-    <string name="pay">Pay</string>
-    <string name="use_location">Use my location</string>
-    <string name="notes">Notes</string>
-    <string name="accept">Accept</string>
-    <string name="withdraw">Withdraw</string>
-    <string name="deposit">Deposit</string>
-    <string name="nfc_read">NFC Read</string>
-    <string name="nfc_push">NFC Push</string>
-    <string name="qr_code_scan">QR Code Scan</string>
-    <string name="qr_code">QR Code</string>
+	<string name="wallet">Wallet</string>
+	<string name="save">Save</string>
+	<string name="spend">Spend</string>
+	<string name="make_payment">Make a payment</string>
+	<string name="receive_money">Receive money</string>
+	<string name="scan">Scan</string>
+	<string name="balance">Balance</string>
+	<string name="transactions">Transactions</string>
+	<string name="view_history">View transaction history</string>
+	<string name="pay">Pay</string>
+	<string name="use_location">Use my location</string>
+	<string name="notes">Notes</string>
+	<string name="accept">Accept</string>
+	<string name="withdraw">Withdraw</string>
+	<string name="deposit">Deposit</string>
+	<string name="nfc_read">NFC Read</string>
+	<string name="nfc_push">NFC Push</string>
+	<string name="qr_code_scan">QR Code Scan</string>
+	<string name="qr_code">QR Code</string>
+	<string name="treasury">Treasury</string>
 </resources>

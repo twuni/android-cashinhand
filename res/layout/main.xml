@@ -2,8 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="fill_parent" android:layout_height="fill_parent" android:padding="10dip" android:orientation="vertical">
 
 	<RelativeLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:paddingBottom="5dip" android:paddingTop="5dip">
-		<TextView android:text="@string/balance" android:id="@+id/balanceLabel" android:layout_width="fill_parent" android:layout_height="wrap_content" android:paddingBottom="5dip" android:textStyle="bold"/>
-		<TextView android:text="" android:id="@+id/balance" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_below="@id/balanceLabel" android:textSize="40dip"/>
+		<Spinner android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/treasury" android:prompt="@string/treasury"/>
+		<TextView android:text="" android:id="@+id/balance" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_centerHorizontal="true" android:textSize="40dip" android:layout_below="@id/treasury"/>
 	</RelativeLayout>
 
 	<RelativeLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:paddingBottom="5dip" android:paddingTop="5dip">
