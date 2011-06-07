@@ -20,4 +20,5 @@
 	<string name="qr_code_scan">QR Code Scan</string>
 	<string name="qr_code">QR Code</string>
 	<string name="treasury">Treasury</string>
+	<string name="treasury_selection">Treasury selection</string>
 </resources>

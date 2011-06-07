@@ -122,9 +122,7 @@ public class MainActivity extends Activity {
 	}
 
 	public void launchDeposit( View view ) {
-		Intent intent = new Intent( Intent.ACTION_GET_CONTENT );
-		intent.setType( "application/json" );
-		startActivity( intent );
+		IntentIntegrator.initiateScan( this );
 	}
 
 	public void launchPayment( View view ) {
