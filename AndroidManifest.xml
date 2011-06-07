@@ -1,61 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="org.twuni.money.wallet" android:versionCode="100000002" android:versionName="1.0.2">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="org.twuni.money.wallet" android:versionCode="000100000" android:versionName="0.1.0">
 
 	<!-- Icon provided by pixel-mixer.com -->
-	<application android:icon="@drawable/icon" android:label="@string/wallet">
-
-		<activity android:name=".activity.MainActivity" android:label="@string/wallet">
+	<application android:icon="@drawable/icon" android:label="@string/cash">
+		<activity android:name=".activity.MainActivity" android:label="@string/cash">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN"/>
 				<category android:name="android.intent.category.LAUNCHER"/>
 			</intent-filter>
 		</activity>
-
-		<activity android:name=".activity.bank.DepositActivity" android:label="@string/deposit">
-			<intent-filter>
-				<action android:name="org.twuni.money.wallet.action.DEPOSIT_MONEY"/>
-			</intent-filter>
-		</activity>
-
-		<activity android:name=".activity.bank.WithdrawActivity" android:label="@string/withdraw">
-			<intent-filter>
-				<action android:name="org.twuni.money.wallet.action.WITHDRAW_MONEY"/>
-			</intent-filter>
-		</activity>
-
-		<activity android:name=".activity.barcode.BarcodeScanActivity" android:label="@string/qr_code_scan">
-			<intent-filter>
-				<action android:name="org.twuni.money.wallet.action.RECEIVE_MONEY"/>
-			</intent-filter>
-		</activity>
-
-		<activity android:name=".activity.barcode.BarcodeShareActivity" android:label="@string/qr_code_scan">
-			<intent-filter>
-				<action android:name="org.twuni.money.wallet.action.SEND_MONEY"/>
-			</intent-filter>
-		</activity>
-
-		<activity android:name="activity.nfc.NFCScanActivity" android:label="@string/nfc_read">
-			<intent-filter>
-				<action android:name="org.twuni.money.wallet.action.RECEIVE_MONEY"/>
-				<action android:name="android.nfc.action.NDEF_DISCOVERED"/>
-				<data android:mimeType="application/json+money"/>
-			</intent-filter>
-		</activity>
-
-		<activity android:name=".activity.nfc.NFCPushActivity" android:label="@string/nfc_push">
-			<intent-filter>
-				<action android:name="org.twuni.money.wallet.action.SEND_MONEY"/>
-			</intent-filter>
-		</activity>
-
 	</application>
 
 	<uses-permission android:name="android.permission.INTERNET"/>
-	<uses-permission android:name="android.permission.NFC"/>
 
-	<uses-sdk android:minSdkVersion="10"/>
-
-	<uses-feature android:name="android.hardware.nfc"/>
+	<uses-sdk android:minSdkVersion="8"/>
 
 </manifest>

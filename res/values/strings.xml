@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+	<string name="cash">Cash</string>
 	<string name="wallet">Wallet</string>
 	<string name="save">Save</string>
 	<string name="spend">Spend</string>
