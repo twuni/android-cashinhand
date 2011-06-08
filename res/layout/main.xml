@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="fill_parent" android:layout_height="fill_parent" android:padding="10dip" android:orientation="vertical">
 
-	<RelativeLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:paddingBottom="5dip" android:paddingTop="5dip">
-		<Spinner android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/treasury" android:prompt="@string/treasury_selection" android:visibility="gone"/>
-		<TextView android:text="" android:id="@+id/balance" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_centerHorizontal="true" android:textSize="40dip" android:layout_below="@id/treasury"/>
-	</RelativeLayout>
+	<ProgressBar android:id="@+id/loading" android:layout_gravity="center_horizontal" android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_marginBottom="5dip"/>
+	<Spinner android:id="@+id/treasury" android:prompt="@string/treasury_selection" android:layout_height="wrap_content" android:layout_width="fill_parent" android:visibility="gone"/>
+	<TextView android:text="$0.00" android:id="@+id/balance" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center_horizontal" android:textSize="40dip" android:visibility="gone"/>
 
 	<RelativeLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:paddingBottom="5dip" android:paddingTop="5dip">
 		<Button android:text="@string/pay" android:onClick="launchPayment" android:id="@+id/payButton" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentRight="true" android:layout_centerVertical="true"/>

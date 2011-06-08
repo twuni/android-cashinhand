@@ -56,10 +56,13 @@ public class MainActivity extends Activity {
 
 		super.onResume();
 
+		beginLoading();
+
 		new Thread() {
 
 			@Override
 			public void run() {
+
 				try {
 					bank.validate();
 				} catch( ManyExceptions exceptions ) {
@@ -72,15 +75,7 @@ public class MainActivity extends Activity {
 
 					@Override
 					public void run() {
-
 						setTreasuries( bank.getTreasuries() );
-
-						if( treasury != null ) {
-							setBalance( bank.getBalance( treasury ) );
-						} else {
-							setBalance( bank.getBalance() );
-						}
-
 					}
 
 				} );
@@ -98,46 +93,59 @@ public class MainActivity extends Activity {
 		handleBarcodeScan( result );
 	}
 
-	private void setBalance( int balance ) {
+	private void beginLoading() {
+		findViewById( R.id.loading ).setVisibility( View.VISIBLE );
+		findViewById( R.id.treasury ).setVisibility( View.GONE );
+		findViewById( R.id.balance ).setVisibility( View.GONE );
+		findViewById( R.id.empty ).setVisibility( View.GONE );
+	}
+
+	private void finishLoading() {
+		findViewById( R.id.loading ).setVisibility( View.GONE );
+	}
+
+	private void showBalance( int balance ) {
 		String text = toCurrencyString( balance );
 		TextView view = (TextView) findViewById( R.id.balance );
 		view.setText( text );
+		view.setVisibility( View.VISIBLE );
+		if( balance <= 0 ) {
+			findViewById( R.id.empty ).setVisibility( View.VISIBLE );
+		}
+		finishLoading();
 	}
 
 	private void setTreasuries( Set<Treasury> treasuries ) {
-		
-		Spinner spinner = (Spinner) findViewById( R.id.treasury );
 
 		if( treasuries.isEmpty() ) {
-			spinner.setVisibility( View.GONE );
-			findViewById( R.id.empty ).setVisibility( View.VISIBLE );
-			setBalance( bank.getBalance() );
+			showBalance( bank.getBalance() );
 			return;
 		}
 
-		findViewById( R.id.empty ).setVisibility( View.GONE );
-		spinner.setVisibility( View.VISIBLE );
+		Spinner treasurySelector = (Spinner) findViewById( R.id.treasury );
 
 		ArrayAdapter<Treasury> adapter = new ArrayAdapter<Treasury>( this, android.R.layout.simple_spinner_item, Arrays.asList( treasuries.toArray( new Treasury [0] ) ) );
 
 		adapter.setDropDownViewResource( android.R.layout.simple_spinner_dropdown_item );
-		spinner.setAdapter( adapter );
+		treasurySelector.setAdapter( adapter );
 
-		spinner.setOnItemSelectedListener( new OnItemSelectedListener() {
+		treasurySelector.setOnItemSelectedListener( new OnItemSelectedListener() {
 
 			@Override
 			public void onItemSelected( AdapterView<?> parent, View view, int index, long id ) {
-				Treasury treasury = (Treasury) parent.getItemAtPosition( index );
+				final Treasury treasury = (Treasury) parent.getItemAtPosition( index );
 				MainActivity.this.treasury = treasury;
-				setBalance( bank.getBalance( treasury ) );
+				showBalance( bank.getBalance( treasury ) );
 			}
 
 			@Override
 			public void onNothingSelected( AdapterView<?> parent ) {
-				setBalance( bank.getBalance() );
+				showBalance( bank.getBalance() );
 			}
 
 		} );
+
+		treasurySelector.setVisibility( View.VISIBLE );
 
 	}
 
@@ -181,12 +189,14 @@ public class MainActivity extends Activity {
 			@Override
 			public void run() {
 				if( contents != null ) {
+					Dollar dollar = null;
 					try {
-						bank.deposit( JsonUtils.deserialize( contents, Dollar.class ) );
+						dollar = JsonUtils.deserialize( contents, Dollar.class );
+						bank.deposit( dollar );
 					} catch( NetworkError exception ) {
-						handleException( exception );
+						handleException( new RuntimeException( String.format( "A network error caused your %s deposit to fail.", toCurrencyString( dollar.getWorth() ) ), exception ) );
 					} catch( ClassCastException exception ) {
-						handleException( new IllegalArgumentException( "The barcode you scanned is not a valid dollar.", exception ) );
+						handleException( new IllegalArgumentException( "The code you scanned is not a valid dollar.", exception ) );
 					} catch( Exception exception ) {
 						handleException( exception );
 					}
