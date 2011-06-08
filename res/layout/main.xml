@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="fill_parent" android:layout_height="fill_parent" android:padding="10dip" android:orientation="vertical">
 
 	<RelativeLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:paddingBottom="5dip" android:paddingTop="5dip">
-		<Spinner android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/treasury" android:prompt="@string/treasury_selection"/>
+		<Spinner android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/treasury" android:prompt="@string/treasury_selection" android:visibility="gone"/>
 		<TextView android:text="" android:id="@+id/balance" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_centerHorizontal="true" android:textSize="40dip" android:layout_below="@id/treasury"/>
 	</RelativeLayout>
 
@@ -12,5 +12,9 @@
 		<TextView android:text="$" android:id="@+id/paymentAmount$" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_toLeftOf="@id/paymentAmount" android:textSize="40dip" android:layout_centerVertical="true"/>
 		<Button android:layout_height="wrap_content" android:text="@string/deposit" android:layout_width="wrap_content" android:onClick="launchDeposit" android:id="@+id/depositButton" android:layout_centerVertical="true"/>
 	</RelativeLayout>
+
+	<TextView android:id="@+id/empty" android:text="@string/empty_wallet" android:layout_width="fill_parent" android:layout_height="wrap_content" android:paddingBottom="5dip" android:textStyle="bold" android:visibility="gone"/>
+	<TextView android:id="@+id/deposit_instructions" android:text="@string/deposit_instructions" android:layout_width="fill_parent" android:layout_height="wrap_content" android:paddingBottom="5dip"/>
+	<TextView android:id="@+id/withdraw_instructions" android:text="@string/withdraw_instructions" android:layout_width="fill_parent" android:layout_height="wrap_content"/>
 
 </LinearLayout>

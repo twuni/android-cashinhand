@@ -17,7 +17,6 @@ import org.twuni.money.wallet.TreasuryLocator;
 import org.twuni.money.wallet.util.DebugUtils;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.http.AndroidHttpClient;
@@ -52,6 +51,53 @@ public class MainActivity extends Activity {
 
 	}
 
+	@Override
+	protected void onResume() {
+
+		super.onResume();
+
+		new Thread() {
+
+			@Override
+			public void run() {
+				try {
+					bank.validate();
+				} catch( ManyExceptions exceptions ) {
+					for( Exception exception : exceptions.getExceptions() ) {
+						handleException( exception );
+					}
+				}
+
+				runOnUiThread( new Runnable() {
+
+					@Override
+					public void run() {
+
+						setTreasuries( bank.getTreasuries() );
+
+						if( treasury != null ) {
+							setBalance( bank.getBalance( treasury ) );
+						} else {
+							setBalance( bank.getBalance() );
+						}
+
+					}
+
+				} );
+
+			}
+
+		}.start();
+
+	}
+
+	@Override
+	protected void onActivityResult( int requestCode, int resultCode, Intent data ) {
+		super.onActivityResult( requestCode, resultCode, data );
+		IntentResult result = IntentIntegrator.parseActivityResult( requestCode, resultCode, data );
+		handleBarcodeScan( result );
+	}
+
 	private void setBalance( int balance ) {
 		String text = toCurrencyString( balance );
 		TextView view = (TextView) findViewById( R.id.balance );
@@ -59,10 +105,24 @@ public class MainActivity extends Activity {
 	}
 
 	private void setTreasuries( Set<Treasury> treasuries ) {
+		
 		Spinner spinner = (Spinner) findViewById( R.id.treasury );
+
+		if( treasuries.isEmpty() ) {
+			spinner.setVisibility( View.GONE );
+			findViewById( R.id.empty ).setVisibility( View.VISIBLE );
+			setBalance( bank.getBalance() );
+			return;
+		}
+
+		findViewById( R.id.empty ).setVisibility( View.GONE );
+		spinner.setVisibility( View.VISIBLE );
+
 		ArrayAdapter<Treasury> adapter = new ArrayAdapter<Treasury>( this, android.R.layout.simple_spinner_item, Arrays.asList( treasuries.toArray( new Treasury [0] ) ) );
+
 		adapter.setDropDownViewResource( android.R.layout.simple_spinner_dropdown_item );
 		spinner.setAdapter( adapter );
+
 		spinner.setOnItemSelectedListener( new OnItemSelectedListener() {
 
 			@Override
@@ -78,42 +138,6 @@ public class MainActivity extends Activity {
 			}
 
 		} );
-
-	}
-
-	@Override
-	protected void onResume() {
-
-		super.onResume();
-
-		setTreasuries( bank.getTreasuries() );
-
-		new Thread() {
-
-			@Override
-			public void run() {
-				try {
-					bank.validate();
-				} catch( ManyExceptions exceptions ) {
-					for( Exception exception : exceptions.getExceptions() ) {
-						handleException( MainActivity.this, exception );
-					}
-				}
-
-				runOnUiThread( new Runnable() {
-
-					@Override
-					public void run() {
-						if( treasury != null ) {
-							setBalance( bank.getBalance( treasury ) );
-						}
-					}
-
-				} );
-
-			}
-
-		}.start();
 
 	}
 
@@ -138,21 +162,14 @@ public class MainActivity extends Activity {
 					}
 					IntentIntegrator.shareText( MainActivity.this, JsonUtils.serialize( bank.withdraw( value, treasury ) ) );
 				} catch( InsufficientFunds exception ) {
-					handleException( MainActivity.this, exception );
+					handleException( exception );
 				} catch( NetworkError exception ) {
-					handleException( MainActivity.this, exception );
+					handleException( exception );
 				}
 			}
 
 		}.start();
 
-	}
-
-	@Override
-	protected void onActivityResult( int requestCode, int resultCode, Intent data ) {
-		super.onActivityResult( requestCode, resultCode, data );
-		IntentResult result = IntentIntegrator.parseActivityResult( requestCode, resultCode, data );
-		handleBarcodeScan( result );
 	}
 
 	private void handleBarcodeScan( IntentResult result ) {
@@ -167,11 +184,11 @@ public class MainActivity extends Activity {
 					try {
 						bank.deposit( JsonUtils.deserialize( contents, Dollar.class ) );
 					} catch( NetworkError exception ) {
-						handleException( MainActivity.this, exception );
+						handleException( exception );
 					} catch( ClassCastException exception ) {
-						handleException( MainActivity.this, new IllegalArgumentException( "The barcode you scanned is not a valid dollar.", exception ) );
+						handleException( new IllegalArgumentException( "The barcode you scanned is not a valid dollar.", exception ) );
 					} catch( Exception exception ) {
-						handleException( MainActivity.this, exception );
+						handleException( exception );
 					}
 				}
 			}
@@ -190,13 +207,13 @@ public class MainActivity extends Activity {
 		}
 	}
 
-	private void handleException( final Context context, final Exception exception ) {
+	private void handleException( final Exception exception ) {
 
 		runOnUiThread( new Runnable() {
 
 			@Override
 			public void run() {
-				DebugUtils.handleException( context, exception );
+				DebugUtils.handleException( MainActivity.this, exception );
 			}
 
 		} );

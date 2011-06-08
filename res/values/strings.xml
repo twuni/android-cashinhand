@@ -22,4 +22,7 @@
 	<string name="qr_code">QR Code</string>
 	<string name="treasury">Treasury</string>
 	<string name="treasury_selection">Treasury selection</string>
+	<string name="empty_wallet">Your wallet is empty.</string>
+	<string name="deposit_instructions">To receive money from someone, just tap the Deposit button.</string>
+	<string name="withdraw_instructions">After you have a positive balance, you can make a payment by typing in an amount and tapping the Pay button.</string>
 </resources>
