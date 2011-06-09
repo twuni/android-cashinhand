@@ -53,37 +53,8 @@ public class MainActivity extends Activity {
 
 	@Override
 	protected void onResume() {
-
 		super.onResume();
-
-		beginLoading();
-
-		new Thread() {
-
-			@Override
-			public void run() {
-
-				try {
-					bank.validate();
-				} catch( ManyExceptions exceptions ) {
-					for( Exception exception : exceptions.getExceptions() ) {
-						handleException( exception );
-					}
-				}
-
-				runOnUiThread( new Runnable() {
-
-					@Override
-					public void run() {
-						setTreasuries( bank.getTreasuries() );
-					}
-
-				} );
-
-			}
-
-		}.start();
-
+		refresh();
 	}
 
 	@Override
@@ -91,6 +62,47 @@ public class MainActivity extends Activity {
 		super.onActivityResult( requestCode, resultCode, data );
 		IntentResult result = IntentIntegrator.parseActivityResult( requestCode, resultCode, data );
 		handleBarcodeScan( result );
+	}
+
+	protected void refresh() {
+
+		runOnUiThread( new Runnable() {
+
+			@Override
+			public void run() {
+
+				beginLoading();
+
+				new Thread() {
+
+					@Override
+					public void run() {
+
+						try {
+							bank.validate();
+						} catch( ManyExceptions exceptions ) {
+							for( Exception exception : exceptions.getExceptions() ) {
+								handleException( exception );
+							}
+						}
+
+						runOnUiThread( new Runnable() {
+
+							@Override
+							public void run() {
+								setTreasuries( bank.getTreasuries() );
+							}
+
+						} );
+
+					}
+
+				}.start();
+
+			}
+
+		} );
+
 	}
 
 	private void beginLoading() {
@@ -193,8 +205,9 @@ public class MainActivity extends Activity {
 					try {
 						dollar = JsonUtils.deserialize( contents, Dollar.class );
 						bank.deposit( dollar );
+						refresh();
 					} catch( NetworkError exception ) {
-						handleException( new RuntimeException( String.format( "A network error caused your %s deposit to fail.", toCurrencyString( dollar.getWorth() ) ), exception ) );
+						handleException( new RuntimeException( String.format( "A network error caused your %s deposit to fail: %s", toCurrencyString( dollar.getWorth() ), exception.getMessage() ), exception ) );
 					} catch( ClassCastException exception ) {
 						handleException( new IllegalArgumentException( "The code you scanned is not a valid dollar.", exception ) );
 					} catch( Exception exception ) {
