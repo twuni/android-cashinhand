@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="org.twuni.money.wallet" android:versionCode="000100100" android:versionName="0.1.1">
 
 	<!-- Icon provided by pixel-mixer.com -->
-	<application android:icon="@drawable/icon" android:label="@string/cash">
-		<activity android:name=".activity.MainActivity" android:label="@string/cash">
+	<application android:icon="@drawable/icon" android:label="@string/cash_in_hand">
+		<activity android:name=".activity.MainActivity" android:label="@string/cash_in_hand">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN"/>
 				<category android:name="android.intent.category.LAUNCHER"/>
