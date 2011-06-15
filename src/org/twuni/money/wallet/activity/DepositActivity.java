@@ -32,8 +32,10 @@ public class DepositActivity extends Activity {
 
 				try {
 					( (WalletApplication) getApplication() ).getBank().deposit( dollar );
-					toast( String.format( "The %s token %s issued by %s has been deposited.", toCurrencyString( dollar.getWorth() ), dollar.getId(), dollar.getTreasury() ) );
-					setResult( RESULT_OK );
+					toast( "The %s token %s issued by %s has been deposited.", toCurrencyString( dollar.getWorth() ), dollar.getId(), dollar.getTreasury() );
+					Intent data = new Intent();
+					data.putExtra( "amount", dollar.getWorth() );
+					setResult( RESULT_OK, data );
 				} catch( Exception exception ) {
 					toast( exception.getMessage() );
 					setResult( RESULT_CANCELED );
@@ -47,7 +49,9 @@ public class DepositActivity extends Activity {
 
 	}
 
-	private void toast( final String message ) {
+	private void toast( String pattern, Object... args ) {
+
+		final String message = String.format( pattern, args );
 
 		runOnUiThread( new Runnable() {
 
