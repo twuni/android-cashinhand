@@ -17,6 +17,12 @@ is backed.
 Changelog
 =========
 
+Version 0.1.1
+-------------
+
+* HTTPS is now required for Treasury communications.
+* Registered handlers for WITHDRAW and DEPOSIT intents.
+
 Version 0.1.0
 -------------
 
