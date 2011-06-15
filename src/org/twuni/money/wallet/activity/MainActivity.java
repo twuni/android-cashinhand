@@ -3,7 +3,6 @@ package org.twuni.money.wallet.activity;
 import java.util.Arrays;
 import java.util.Set;
 
-import org.apache.http.client.HttpClient;
 import org.twuni.money.bank.exception.InsufficientFunds;
 import org.twuni.money.bank.exception.ManyExceptions;
 import org.twuni.money.bank.exception.NetworkError;
@@ -12,14 +11,11 @@ import org.twuni.money.bank.model.Dollar;
 import org.twuni.money.bank.model.Treasury;
 import org.twuni.money.bank.util.JsonUtils;
 import org.twuni.money.wallet.R;
-import org.twuni.money.wallet.SharedPreferencesVault;
-import org.twuni.money.wallet.TreasuryLocator;
+import org.twuni.money.wallet.application.WalletApplication;
 import org.twuni.money.wallet.util.DebugUtils;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.net.http.AndroidHttpClient;
 import android.os.Bundle;
 import android.text.Editable;
 import android.view.View;
@@ -35,6 +31,8 @@ import com.google.zxing.integration.android.IntentResult;
 
 public class MainActivity extends Activity {
 
+	private static final int REQUEST_CODE_DEPOSIT = 6340517;
+
 	private Bank bank;
 	private Treasury treasury;
 
@@ -44,10 +42,7 @@ public class MainActivity extends Activity {
 		super.onCreate( savedInstanceState );
 		setContentView( R.layout.main );
 
-		SharedPreferences preferences = getSharedPreferences( getClass().getName(), MODE_PRIVATE );
-		HttpClient client = AndroidHttpClient.newInstance( "Android/Twuni", this );
-
-		bank = new Bank( new SharedPreferencesVault( preferences ), new TreasuryLocator( client ) );
+		bank = ( (WalletApplication) getApplication() ).getBank();
 
 	}
 
@@ -59,9 +54,28 @@ public class MainActivity extends Activity {
 
 	@Override
 	protected void onActivityResult( int requestCode, int resultCode, Intent data ) {
+
 		super.onActivityResult( requestCode, resultCode, data );
-		IntentResult result = IntentIntegrator.parseActivityResult( requestCode, resultCode, data );
-		handleBarcodeScan( result );
+
+		switch( requestCode ) {
+
+			case REQUEST_CODE_DEPOSIT:
+
+				if( resultCode == RESULT_OK ) {
+					refresh();
+				}
+
+				break;
+
+			default:
+
+				IntentResult result = IntentIntegrator.parseActivityResult( requestCode, resultCode, data );
+				if( result != null ) {
+					handleBarcodeScan( result );
+				}
+
+		}
+
 	}
 
 	protected void refresh() {
@@ -201,13 +215,8 @@ public class MainActivity extends Activity {
 			@Override
 			public void run() {
 				if( contents != null ) {
-					Dollar dollar = null;
 					try {
-						dollar = JsonUtils.deserialize( contents, Dollar.class );
-						bank.deposit( dollar );
-						refresh();
-					} catch( NetworkError exception ) {
-						handleException( new RuntimeException( String.format( "A network error caused your %s deposit to fail: %s", toCurrencyString( dollar.getWorth() ), exception.getMessage() ), exception ) );
+						deposit( JsonUtils.deserialize( contents, Dollar.class ) );
 					} catch( ClassCastException exception ) {
 						handleException( new IllegalArgumentException( "The code you scanned is not a valid dollar.", exception ) );
 					} catch( Exception exception ) {
@@ -241,6 +250,12 @@ public class MainActivity extends Activity {
 
 		} );
 
+	}
+
+	private void deposit( Dollar dollar ) {
+		Intent intent = new Intent( WalletApplication.ACTION_DEPOSIT );
+		intent.putExtra( "token", JsonUtils.serialize( dollar ) );
+		startActivityForResult( intent, REQUEST_CODE_DEPOSIT );
 	}
 
 }
