@@ -194,7 +194,7 @@ public class MainActivity extends Activity {
 
 	public void launchPayment( View view ) {
 		int amount = getValueFromEditText( R.id.paymentAmount );
-		if( amount <= 0 ) {
+		if( amount <= 0 || treasury == null ) {
 			return;
 		}
 		withdraw( amount, treasury.toString() );
