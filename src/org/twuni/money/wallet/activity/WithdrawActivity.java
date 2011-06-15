@@ -1,6 +1,7 @@
 package org.twuni.money.wallet.activity;
 
 import org.twuni.money.bank.model.Dollar;
+import org.twuni.money.bank.model.Treasury;
 import org.twuni.money.bank.util.JsonUtils;
 import org.twuni.money.wallet.R;
 import org.twuni.money.wallet.application.WalletApplication;
@@ -12,7 +13,7 @@ import android.os.Bundle;
 import android.view.Window;
 import android.widget.Toast;
 
-public class DepositActivity extends Activity {
+public class WithdrawActivity extends Activity {
 
 	@Override
 	protected void onCreate( Bundle savedInstanceState ) {
@@ -24,7 +25,9 @@ public class DepositActivity extends Activity {
 
 		Intent intent = getIntent();
 
-		final Dollar dollar = JsonUtils.deserialize( intent.getStringExtra( Extra.TOKEN.toString() ), Dollar.class );
+		final WalletApplication application = (WalletApplication) getApplication();
+		final int amount = intent.getIntExtra( Extra.AMOUNT.toString(), 0 );
+		final Treasury treasury = application.getTreasury( intent.getStringExtra( Extra.TREASURY.toString() ) );
 
 		new Thread() {
 
@@ -32,13 +35,12 @@ public class DepositActivity extends Activity {
 			public void run() {
 
 				try {
-					( (WalletApplication) getApplication() ).getBank().deposit( dollar );
-					toast( "The %s token %s issued by %s has been deposited.", toCurrencyString( dollar.getWorth() ), dollar.getId(), dollar.getTreasury() );
+					Dollar dollar = application.getBank().withdraw( amount, treasury );
 					Intent data = new Intent();
-					data.putExtra( Extra.AMOUNT.toString(), dollar.getWorth() );
+					data.putExtra( Extra.TOKEN.toString(), JsonUtils.serialize( dollar ) );
 					setResult( RESULT_OK, data );
 				} catch( Exception exception ) {
-					toast( exception.getMessage() );
+					handleException( exception.getMessage() );
 					setResult( RESULT_CANCELED );
 				}
 
@@ -50,7 +52,7 @@ public class DepositActivity extends Activity {
 
 	}
 
-	private void toast( String pattern, Object... args ) {
+	private void handleException( String pattern, Object... args ) {
 
 		final String message = String.format( pattern, args );
 
@@ -58,15 +60,10 @@ public class DepositActivity extends Activity {
 
 			@Override
 			public void run() {
-				Toast.makeText( DepositActivity.this, message, Toast.LENGTH_SHORT ).show();
+				Toast.makeText( WithdrawActivity.this, message, Toast.LENGTH_SHORT ).show();
 			}
 
 		} );
 
 	}
-
-	private String toCurrencyString( int balance ) {
-		return String.format( "$%.2f", Double.valueOf( balance / 100.0 ) );
-	}
-
 }

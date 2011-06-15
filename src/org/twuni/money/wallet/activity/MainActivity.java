@@ -3,15 +3,15 @@ package org.twuni.money.wallet.activity;
 import java.util.Arrays;
 import java.util.Set;
 
-import org.twuni.money.bank.exception.InsufficientFunds;
 import org.twuni.money.bank.exception.ManyExceptions;
-import org.twuni.money.bank.exception.NetworkError;
 import org.twuni.money.bank.model.Bank;
 import org.twuni.money.bank.model.Dollar;
 import org.twuni.money.bank.model.Treasury;
 import org.twuni.money.bank.util.JsonUtils;
 import org.twuni.money.wallet.R;
 import org.twuni.money.wallet.application.WalletApplication;
+import org.twuni.money.wallet.application.WalletApplication.Action;
+import org.twuni.money.wallet.application.WalletApplication.Extra;
 import org.twuni.money.wallet.util.DebugUtils;
 
 import android.app.Activity;
@@ -32,6 +32,7 @@ import com.google.zxing.integration.android.IntentResult;
 public class MainActivity extends Activity {
 
 	private static final int REQUEST_CODE_DEPOSIT = 6340517;
+	private static final int REQUEST_CODE_WITHDRAW = 41748284;
 
 	private Bank bank;
 	private Treasury treasury;
@@ -63,6 +64,14 @@ public class MainActivity extends Activity {
 
 				if( resultCode == RESULT_OK ) {
 					refresh();
+				}
+
+				break;
+
+			case REQUEST_CODE_WITHDRAW:
+
+				if( resultCode == RESULT_OK ) {
+					IntentIntegrator.shareText( this, data.getStringExtra( Extra.TOKEN.toString() ) );
 				}
 
 				break;
@@ -184,48 +193,24 @@ public class MainActivity extends Activity {
 	}
 
 	public void launchPayment( View view ) {
-
-		new Thread() {
-
-			@Override
-			public void run() {
-				try {
-					int value = getValueFromEditText( R.id.paymentAmount );
-					if( value <= 0 ) {
-						return;
-					}
-					IntentIntegrator.shareText( MainActivity.this, JsonUtils.serialize( bank.withdraw( value, treasury ) ) );
-				} catch( InsufficientFunds exception ) {
-					handleException( exception );
-				} catch( NetworkError exception ) {
-					handleException( exception );
-				}
-			}
-
-		}.start();
-
+		int amount = getValueFromEditText( R.id.paymentAmount );
+		if( amount <= 0 ) {
+			return;
+		}
+		withdraw( amount, treasury.toString() );
 	}
 
 	private void handleBarcodeScan( IntentResult result ) {
 
-		final String contents = result.getContents();
+		if( result == null || result.getContents() == null ) {
+			return;
+		}
 
-		new Thread() {
-
-			@Override
-			public void run() {
-				if( contents != null ) {
-					try {
-						deposit( JsonUtils.deserialize( contents, Dollar.class ) );
-					} catch( ClassCastException exception ) {
-						handleException( new IllegalArgumentException( "The code you scanned is not a valid dollar.", exception ) );
-					} catch( Exception exception ) {
-						handleException( exception );
-					}
-				}
-			}
-
-		}.start();
+		try {
+			deposit( JsonUtils.deserialize( result.getContents(), Dollar.class ) );
+		} catch( ClassCastException exception ) {
+			handleException( new IllegalArgumentException( "The barcode you scanned is invalid.", exception ) );
+		}
 
 	}
 
@@ -253,9 +238,24 @@ public class MainActivity extends Activity {
 	}
 
 	private void deposit( Dollar dollar ) {
-		Intent intent = new Intent( WalletApplication.ACTION_DEPOSIT );
-		intent.putExtra( "token", JsonUtils.serialize( dollar ) );
+
+		Intent intent = new Intent( Action.DEPOSIT.toString() );
+
+		intent.putExtra( Extra.TOKEN.toString(), JsonUtils.serialize( dollar ) );
+
 		startActivityForResult( intent, REQUEST_CODE_DEPOSIT );
+
+	}
+
+	private void withdraw( int amount, String treasury ) {
+
+		Intent intent = new Intent( Action.WITHDRAW.toString() );
+
+		intent.putExtra( Extra.AMOUNT.toString(), amount );
+		intent.putExtra( Extra.TREASURY.toString(), treasury );
+
+		startActivityForResult( intent, REQUEST_CODE_WITHDRAW );
+
 	}
 
 }

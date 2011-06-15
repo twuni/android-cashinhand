@@ -5,21 +5,24 @@
 	<application android:name=".application.WalletApplication" android:icon="@drawable/icon" android:label="@string/cash_in_hand">
 
 		<activity android:name=".activity.MainActivity" android:label="@string/cash_in_hand">
-
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN"/>
 				<category android:name="android.intent.category.LAUNCHER"/>
 			</intent-filter>
-
 		</activity>
 		
 		<activity android:name=".activity.DepositActivity" android:label="@string/deposit">
-		
 			<intent-filter>
 				<action android:name="org.twuni.money.action.DEPOSIT"/>
 				<category android:name="android.intent.category.DEFAULT"/>
 			</intent-filter>
+		</activity>
 
+		<activity android:name=".activity.WithdrawActivity" android:label="@string/withdraw">
+			<intent-filter>
+				<action android:name="org.twuni.money.action.WITHDRAW"/>
+				<category android:name="android.intent.category.DEFAULT"/>
+			</intent-filter>
 		</activity>
 
 	</application>
