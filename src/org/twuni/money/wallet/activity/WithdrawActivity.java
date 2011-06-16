@@ -1,8 +1,7 @@
 package org.twuni.money.wallet.activity;
 
-import org.twuni.money.bank.model.Dollar;
-import org.twuni.money.bank.model.Treasury;
-import org.twuni.money.bank.util.JsonUtils;
+import org.twuni.money.common.Token;
+import org.twuni.money.common.Treasury;
 import org.twuni.money.wallet.R;
 import org.twuni.money.wallet.application.WalletApplication;
 import org.twuni.money.wallet.application.WalletApplication.Extra;
@@ -12,6 +11,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Window;
 import android.widget.Toast;
+
+import com.google.gson.Gson;
 
 public class WithdrawActivity extends Activity {
 
@@ -35,9 +36,9 @@ public class WithdrawActivity extends Activity {
 			public void run() {
 
 				try {
-					Dollar dollar = application.getBank().withdraw( amount, treasury );
+					Token dollar = application.getBank( treasury ).withdraw( amount );
 					Intent data = new Intent();
-					data.putExtra( Extra.TOKEN.toString(), JsonUtils.serialize( dollar ) );
+					data.putExtra( Extra.TOKEN.toString(), new Gson().toJson( dollar ) );
 					setResult( RESULT_OK, data );
 				} catch( Exception exception ) {
 					handleException( exception.getMessage() );

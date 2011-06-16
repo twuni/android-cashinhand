@@ -1,7 +1,7 @@
 package org.twuni.money.wallet.activity;
 
-import org.twuni.money.bank.model.Dollar;
-import org.twuni.money.bank.util.JsonUtils;
+import org.twuni.money.common.SimpleToken;
+import org.twuni.money.common.Token;
 import org.twuni.money.wallet.R;
 import org.twuni.money.wallet.application.WalletApplication;
 import org.twuni.money.wallet.application.WalletApplication.Extra;
@@ -11,6 +11,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Window;
 import android.widget.Toast;
+
+import com.google.gson.Gson;
 
 public class DepositActivity extends Activity {
 
@@ -24,7 +26,8 @@ public class DepositActivity extends Activity {
 
 		Intent intent = getIntent();
 
-		final Dollar dollar = JsonUtils.deserialize( intent.getStringExtra( Extra.TOKEN.toString() ), Dollar.class );
+		final WalletApplication application = (WalletApplication) getApplication();
+		final Token token = new Gson().fromJson( intent.getStringExtra( Extra.TOKEN.toString() ), SimpleToken.class );
 
 		new Thread() {
 
@@ -32,10 +35,10 @@ public class DepositActivity extends Activity {
 			public void run() {
 
 				try {
-					( (WalletApplication) getApplication() ).getBank().deposit( dollar );
-					toast( "The %s token %s issued by %s has been deposited.", toCurrencyString( dollar.getWorth() ), dollar.getId(), dollar.getTreasury() );
+					application.getBank( token ).deposit( token );
+					toast( "Deposited %s into the vault for %s.", toCurrencyString( token.getValue() ), token.getTreasury() );
 					Intent data = new Intent();
-					data.putExtra( Extra.AMOUNT.toString(), dollar.getWorth() );
+					data.putExtra( Extra.AMOUNT.toString(), token.getValue() );
 					setResult( RESULT_OK, data );
 				} catch( Exception exception ) {
 					toast( exception.getMessage() );

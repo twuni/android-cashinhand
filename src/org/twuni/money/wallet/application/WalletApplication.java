@@ -1,15 +1,23 @@
 package org.twuni.money.wallet.application;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.apache.http.client.HttpClient;
-import org.twuni.money.bank.model.Bank;
-import org.twuni.money.bank.model.Treasury;
-import org.twuni.money.wallet.SharedPreferencesVault;
-import org.twuni.money.wallet.TreasuryLocator;
+import org.twuni.money.common.Bank;
+import org.twuni.money.common.SimpleToken;
+import org.twuni.money.common.Token;
+import org.twuni.money.common.Treasury;
+import org.twuni.money.common.TreasuryClient;
+import org.twuni.money.wallet.PreferencesRepository;
 import org.twuni.money.wallet.activity.MainActivity;
 
 import android.app.Application;
 import android.content.SharedPreferences;
 import android.net.http.AndroidHttpClient;
+
+import com.google.gson.reflect.TypeToken;
 
 public class WalletApplication extends Application {
 
@@ -33,27 +41,44 @@ public class WalletApplication extends Application {
 
 	}
 
+	private SharedPreferences preferences;
 	private HttpClient client;
-	private Bank bank;
+	private PreferencesRepository<String> treasuries;
 
 	@Override
 	public void onCreate() {
 
 		super.onCreate();
 
-		SharedPreferences preferences = getSharedPreferences( MainActivity.class.getName(), MODE_PRIVATE );
-
 		client = AndroidHttpClient.newInstance( "Android/Cash in Hand", this );
-		bank = new Bank( new SharedPreferencesVault( preferences ), new TreasuryLocator( client ) );
+		preferences = getSharedPreferences( MainActivity.class.getName(), MODE_PRIVATE );
+
+		treasuries = new PreferencesRepository<String>( preferences, "treasuries", new TypeToken<List<String>>() {
+		}.getType() );
 
 	}
 
-	public Bank getBank() {
-		return bank;
+	public Bank getBank( Token token ) {
+		return getBank( getTreasury( token.getTreasury() ) );
+	}
+
+	public Bank getBank( Treasury treasury ) {
+		return new Bank( new PreferencesRepository<Token>( preferences, treasury.toString(), new TypeToken<List<SimpleToken>>() {
+		}.getType() ), treasury );
 	}
 
 	public Treasury getTreasury( String domain ) {
-		return new Treasury( client, domain );
+		TreasuryClient treasury = new TreasuryClient( client, domain );
+		treasuries.save( domain );
+		return treasury;
+	}
+
+	public Set<Treasury> getTreasuries() {
+		Set<Treasury> result = new HashSet<Treasury>();
+		for( String domain : treasuries.list() ) {
+			result.add( getTreasury( domain ) );
+		}
+		return result;
 	}
 
 }

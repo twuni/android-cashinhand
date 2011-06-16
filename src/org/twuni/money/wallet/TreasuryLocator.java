@@ -4,11 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.http.client.HttpClient;
-import org.twuni.money.bank.model.Dollar;
-import org.twuni.money.bank.model.Treasury;
-import org.twuni.money.bank.util.Locator;
+import org.twuni.money.common.Locator;
+import org.twuni.money.common.Token;
+import org.twuni.money.common.Treasury;
+import org.twuni.money.common.TreasuryClient;
 
-public class TreasuryLocator implements Locator<Dollar, Treasury> {
+public class TreasuryLocator implements Locator<Token, Treasury> {
 
 	private final HttpClient client;
 	private final Map<String, Treasury> treasuries = new HashMap<String, Treasury>();
@@ -18,13 +19,13 @@ public class TreasuryLocator implements Locator<Dollar, Treasury> {
 	}
 
 	@Override
-	public Treasury lookup( Dollar dollar ) {
+	public Treasury lookup( Token token ) {
 
-		Treasury treasury = treasuries.get( dollar.getTreasury() );
+		Treasury treasury = treasuries.get( token.getTreasury() );
 
 		if( treasury == null ) {
-			treasury = new Treasury( client, dollar.getTreasury() );
-			treasuries.put( dollar.getTreasury(), treasury );
+			treasury = new TreasuryClient( client, token.getTreasury() );
+			treasuries.put( token.getTreasury(), treasury );
 		}
 
 		return treasury;

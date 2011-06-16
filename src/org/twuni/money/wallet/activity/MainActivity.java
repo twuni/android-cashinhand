@@ -3,11 +3,10 @@ package org.twuni.money.wallet.activity;
 import java.util.Arrays;
 import java.util.Set;
 
-import org.twuni.money.bank.exception.ManyExceptions;
-import org.twuni.money.bank.model.Bank;
-import org.twuni.money.bank.model.Dollar;
-import org.twuni.money.bank.model.Treasury;
-import org.twuni.money.bank.util.JsonUtils;
+import org.twuni.money.common.SimpleToken;
+import org.twuni.money.common.Token;
+import org.twuni.money.common.Treasury;
+import org.twuni.money.common.exception.ManyExceptions;
 import org.twuni.money.wallet.R;
 import org.twuni.money.wallet.application.WalletApplication;
 import org.twuni.money.wallet.application.WalletApplication.Action;
@@ -26,6 +25,8 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -34,7 +35,7 @@ public class MainActivity extends Activity {
 	private static final int REQUEST_CODE_DEPOSIT = 6340517;
 	private static final int REQUEST_CODE_WITHDRAW = 41748284;
 
-	private Bank bank;
+	private WalletApplication application;
 	private Treasury treasury;
 
 	@Override
@@ -43,7 +44,7 @@ public class MainActivity extends Activity {
 		super.onCreate( savedInstanceState );
 		setContentView( R.layout.main );
 
-		bank = ( (WalletApplication) getApplication() ).getBank();
+		application = (WalletApplication) getApplication();
 
 	}
 
@@ -102,7 +103,9 @@ public class MainActivity extends Activity {
 					public void run() {
 
 						try {
-							bank.validate();
+							for( Treasury treasury : application.getTreasuries() ) {
+								application.getBank( treasury ).validate();
+							}
 						} catch( ManyExceptions exceptions ) {
 							for( Exception exception : exceptions.getExceptions() ) {
 								handleException( exception );
@@ -113,7 +116,7 @@ public class MainActivity extends Activity {
 
 							@Override
 							public void run() {
-								setTreasuries( bank.getTreasuries() );
+								setTreasuries( application.getTreasuries() );
 							}
 
 						} );
@@ -153,7 +156,7 @@ public class MainActivity extends Activity {
 	private void setTreasuries( Set<Treasury> treasuries ) {
 
 		if( treasuries.isEmpty() ) {
-			showBalance( bank.getBalance() );
+			showBalance( 0 );
 			return;
 		}
 
@@ -170,12 +173,12 @@ public class MainActivity extends Activity {
 			public void onItemSelected( AdapterView<?> parent, View view, int index, long id ) {
 				final Treasury treasury = (Treasury) parent.getItemAtPosition( index );
 				MainActivity.this.treasury = treasury;
-				showBalance( bank.getBalance( treasury ) );
+				showBalance( application.getBank( treasury ).getBalance() );
 			}
 
 			@Override
 			public void onNothingSelected( AdapterView<?> parent ) {
-				showBalance( bank.getBalance() );
+				showBalance( 0 );
 			}
 
 		} );
@@ -207,8 +210,8 @@ public class MainActivity extends Activity {
 		}
 
 		try {
-			deposit( JsonUtils.deserialize( result.getContents(), Dollar.class ) );
-		} catch( ClassCastException exception ) {
+			deposit( new Gson().fromJson( result.getContents(), SimpleToken.class ) );
+		} catch( JsonParseException exception ) {
 			handleException( new IllegalArgumentException( "The barcode you scanned is invalid.", exception ) );
 		}
 
@@ -237,11 +240,11 @@ public class MainActivity extends Activity {
 
 	}
 
-	private void deposit( Dollar dollar ) {
+	private void deposit( Token token ) {
 
 		Intent intent = new Intent( Action.DEPOSIT.toString() );
 
-		intent.putExtra( Extra.TOKEN.toString(), JsonUtils.serialize( dollar ) );
+		intent.putExtra( Extra.TOKEN.toString(), new Gson().toJson( token ) );
 
 		startActivityForResult( intent, REQUEST_CODE_DEPOSIT );
 
