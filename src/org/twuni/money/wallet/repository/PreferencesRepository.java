@@ -1,4 +1,4 @@
-package org.twuni.money.wallet;
+package org.twuni.money.wallet.repository;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;

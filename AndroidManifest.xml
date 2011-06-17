@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="org.twuni.money.wallet" android:versionCode="000100200" android:versionName="0.1.2">
 
-	<application android:name=".application.WalletApplication" android:icon="@drawable/icon" android:label="@string/cash_in_hand">
+	<application android:name=".application.WalletApplication" android:icon="@drawable/icon" android:label="@string/cash_in_hand" android:theme="@style/CashInHandTheme">
 
 		<activity android:name=".activity.MainActivity" android:label="@string/cash_in_hand">
 			<intent-filter>
@@ -9,6 +9,8 @@
 				<category android:name="android.intent.category.LAUNCHER"/>
 			</intent-filter>
 		</activity>
+		
+		<activity android:name=".activity.TreasuryListActivity" android:label="@string/cash_in_hand"/>
 		
 		<activity android:name=".activity.DepositActivity" android:label="@string/deposit">
 			<intent-filter>

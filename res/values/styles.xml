@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+	<style name="CashInHandWindowTitleBackground">
+		<item name="android:background">#FF009900</item>
+	</style>
+	<style name="CashInHandTheme">
+		<item name="android:windowTitleSize">40dip</item>
+		<item name="android:windowTitleBackgroundStyle">@style/CashInHandWindowTitleBackground</item>
+	</style>
+</resources>

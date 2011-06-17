@@ -1,23 +1,19 @@
 package org.twuni.money.wallet.application;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.http.client.HttpClient;
 import org.twuni.money.common.Bank;
-import org.twuni.money.common.SimpleToken;
 import org.twuni.money.common.Token;
 import org.twuni.money.common.Treasury;
 import org.twuni.money.common.TreasuryClient;
-import org.twuni.money.wallet.PreferencesRepository;
-import org.twuni.money.wallet.activity.MainActivity;
+import org.twuni.money.wallet.repository.TokenRepository;
 
 import android.app.Application;
-import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.http.AndroidHttpClient;
-
-import com.google.gson.reflect.TypeToken;
 
 public class WalletApplication extends Application {
 
@@ -41,9 +37,8 @@ public class WalletApplication extends Application {
 
 	}
 
-	private SharedPreferences preferences;
 	private HttpClient client;
-	private PreferencesRepository<String> treasuries;
+	private TokenRepository repository;
 
 	@Override
 	public void onCreate() {
@@ -51,10 +46,7 @@ public class WalletApplication extends Application {
 		super.onCreate();
 
 		client = AndroidHttpClient.newInstance( "Android/Cash in Hand", this );
-		preferences = getSharedPreferences( MainActivity.class.getName(), MODE_PRIVATE );
-
-		treasuries = new PreferencesRepository<String>( preferences, "treasuries", new TypeToken<List<String>>() {
-		}.getType() );
+		repository = new TokenRepository( this );
 
 	}
 
@@ -63,22 +55,33 @@ public class WalletApplication extends Application {
 	}
 
 	public Bank getBank( Treasury treasury ) {
-		return new Bank( new PreferencesRepository<Token>( preferences, treasury.toString(), new TypeToken<List<SimpleToken>>() {
-		}.getType() ), treasury );
+		return new Bank( repository, treasury );
 	}
 
 	public Treasury getTreasury( String domain ) {
-		TreasuryClient treasury = new TreasuryClient( client, domain );
-		treasuries.save( domain );
-		return treasury;
+		return new TreasuryClient( client, domain );
 	}
 
 	public Set<Treasury> getTreasuries() {
-		Set<Treasury> result = new HashSet<Treasury>();
-		for( String domain : treasuries.list() ) {
-			result.add( getTreasury( domain ) );
+		SQLiteDatabase database = repository.getReadableDatabase();
+		Cursor cursor = database.rawQuery( "SELECT DISTINCT treasury FROM token", new String [0] );
+		Set<Treasury> treasuries = new HashSet<Treasury>();
+		while( cursor.moveToNext() ) {
+			treasuries.add( new TreasuryClient( client, cursor.getString( 0 ) ) );
 		}
-		return result;
+		return treasuries;
+	}
+
+	public Set<Bank> getBanks() {
+		Set<Bank> banks = new HashSet<Bank>();
+		for( Treasury treasury : getTreasuries() ) {
+			banks.add( getBank( treasury ) );
+		}
+		return banks;
+	}
+
+	public Cursor executeQuery( String sql, String... params ) {
+		return repository.getReadableDatabase().rawQuery( sql, params );
 	}
 
 }

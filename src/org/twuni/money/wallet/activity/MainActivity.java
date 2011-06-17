@@ -3,6 +3,7 @@ package org.twuni.money.wallet.activity;
 import java.util.Arrays;
 import java.util.Set;
 
+import org.twuni.money.common.Bank;
 import org.twuni.money.common.SimpleToken;
 import org.twuni.money.common.Token;
 import org.twuni.money.common.Treasury;
@@ -15,9 +16,11 @@ import org.twuni.money.wallet.util.DebugUtils;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
@@ -34,6 +37,7 @@ public class MainActivity extends Activity {
 
 	private static final int REQUEST_CODE_DEPOSIT = 6340517;
 	private static final int REQUEST_CODE_WITHDRAW = 41748284;
+	private static final int REQUEST_CODE_SHARE = 54823;
 
 	private WalletApplication application;
 	private Treasury treasury;
@@ -42,7 +46,9 @@ public class MainActivity extends Activity {
 	protected void onCreate( Bundle savedInstanceState ) {
 
 		super.onCreate( savedInstanceState );
+		requestWindowFeature( Window.FEATURE_CUSTOM_TITLE );
 		setContentView( R.layout.main );
+		getWindow().setFeatureInt( Window.FEATURE_CUSTOM_TITLE, R.layout.title );
 
 		application = (WalletApplication) getApplication();
 
@@ -72,7 +78,18 @@ public class MainActivity extends Activity {
 			case REQUEST_CODE_WITHDRAW:
 
 				if( resultCode == RESULT_OK ) {
-					IntentIntegrator.shareText( this, data.getStringExtra( Extra.TOKEN.toString() ) );
+					Intent intent = new Intent( Intent.ACTION_SEND );
+					intent.setType( "text/plain" );
+					intent.putExtra( Intent.EXTRA_TEXT, data.getStringExtra( Extra.TOKEN.toString() ) );
+					startActivityForResult( intent, REQUEST_CODE_SHARE );
+				}
+
+				break;
+
+			case REQUEST_CODE_SHARE:
+
+				if( resultCode == RESULT_OK ) {
+					refresh();
 				}
 
 				break;
@@ -90,44 +107,33 @@ public class MainActivity extends Activity {
 
 	protected void refresh() {
 
-		runOnUiThread( new Runnable() {
+		new AsyncTask<Bank, Void, Void>() {
 
 			@Override
-			public void run() {
-
+			protected void onPreExecute() {
 				beginLoading();
-
-				new Thread() {
-
-					@Override
-					public void run() {
-
-						try {
-							for( Treasury treasury : application.getTreasuries() ) {
-								application.getBank( treasury ).validate();
-							}
-						} catch( ManyExceptions exceptions ) {
-							for( Exception exception : exceptions.getExceptions() ) {
-								handleException( exception );
-							}
-						}
-
-						runOnUiThread( new Runnable() {
-
-							@Override
-							public void run() {
-								setTreasuries( application.getTreasuries() );
-							}
-
-						} );
-
-					}
-
-				}.start();
-
 			}
 
-		} );
+			@Override
+			protected Void doInBackground( Bank... banks ) {
+				try {
+					for( Bank bank : banks ) {
+						bank.validate();
+					}
+				} catch( ManyExceptions exceptions ) {
+					for( Exception exception : exceptions.getExceptions() ) {
+						handleException( exception );
+					}
+				}
+				return null;
+			}
+
+			@Override
+			protected void onPostExecute( Void result ) {
+				setTreasuries( application.getTreasuries() );
+			};
+
+		}.execute( application.getBanks().toArray( new Bank [0] ) );
 
 	}
 
@@ -191,7 +197,7 @@ public class MainActivity extends Activity {
 		return String.format( "$%.2f", Double.valueOf( balance / 100.0 ) );
 	}
 
-	public void launchDeposit( View view ) {
+	public void deposit( View view ) {
 		IntentIntegrator.initiateScan( this );
 	}
 

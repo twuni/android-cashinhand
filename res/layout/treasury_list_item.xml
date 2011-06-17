@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:background="#FFd9fcb6">
+    <TextView android:text="" android:id="@+id/treasury" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="#FF003300" android:paddingLeft="5sp" android:paddingTop="2sp"/>
+    <TextView android:text="" android:id="@+id/balance" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_below="@id/treasury" android:textColor="#FF009900" android:textSize="20dp" android:paddingLeft="5sp"/>
+    <Button android:text="@string/pay" android:id="@+id/withdraw_button" android:layout_width="wrap_content" android:layout_height="40dp" android:layout_marginTop="5dp" android:layout_alignParentRight="true" onClick="withdraw"/>
+</RelativeLayout>
