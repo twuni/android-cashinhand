@@ -45,7 +45,7 @@ public class DepositActivity extends Activity {
 					setResult( RESULT_CANCELED );
 				}
 
-				onBackPressed();
+				finish();
 
 			}
 

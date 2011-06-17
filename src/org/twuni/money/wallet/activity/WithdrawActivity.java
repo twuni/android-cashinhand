@@ -36,16 +36,22 @@ public class WithdrawActivity extends Activity {
 			public void run() {
 
 				try {
-					Token dollar = application.getBank( treasury ).withdraw( amount );
+
+					Token token = application.getBank( treasury ).withdraw( amount );
+					String tokenString = new Gson().toJson( token );
+
+					application.share( WithdrawActivity.this, tokenString );
+
 					Intent data = new Intent();
-					data.putExtra( Extra.TOKEN.toString(), new Gson().toJson( dollar ) );
+					data.putExtra( Extra.TOKEN.toString(), tokenString );
 					setResult( RESULT_OK, data );
+
 				} catch( Exception exception ) {
 					handleException( exception.getMessage() );
 					setResult( RESULT_CANCELED );
 				}
 
-				onBackPressed();
+				finish();
 
 			}
 

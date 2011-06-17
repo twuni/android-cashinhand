@@ -1,6 +1,8 @@
 package org.twuni.money.wallet.application;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.http.client.HttpClient;
@@ -8,9 +10,12 @@ import org.twuni.money.common.Bank;
 import org.twuni.money.common.Token;
 import org.twuni.money.common.Treasury;
 import org.twuni.money.common.TreasuryClient;
+import org.twuni.money.common.exception.ManyExceptions;
 import org.twuni.money.wallet.repository.TokenRepository;
 
+import android.app.Activity;
 import android.app.Application;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.http.AndroidHttpClient;
@@ -19,12 +24,20 @@ public class WalletApplication extends Application {
 
 	public static enum Action {
 
-		DEPOSIT,
-		WITHDRAW;
+		DEPOSIT( "org.twuni.money.action.DEPOSIT" ),
+		WITHDRAW( "org.twuni.money.action.WITHDRAW" ),
+		SCAN( "com.google.zxing.client.android.SCAN" ),
+		SHARE( Intent.ACTION_SEND );
+
+		private final String action;
+
+		private Action( String action ) {
+			this.action = action;
+		}
 
 		@Override
 		public String toString() {
-			return String.format( "org.twuni.money.action.%s", name() );
+			return action;
 		};
 
 	}
@@ -33,7 +46,26 @@ public class WalletApplication extends Application {
 
 		TOKEN,
 		AMOUNT,
-		TREASURY;
+		TREASURY,
+		SCAN_MODE;
+
+	}
+
+	public static enum Request {
+
+		WITHDRAW,
+		DEPOSIT,
+		SCAN,
+		SHARE;
+
+		public static Request valueOf( int hashCode ) {
+			for( Request request : values() ) {
+				if( request.hashCode() == hashCode ) {
+					return request;
+				}
+			}
+			return null;
+		}
 
 	}
 
@@ -80,8 +112,64 @@ public class WalletApplication extends Application {
 		return banks;
 	}
 
+	public void checkIntegrity() {
+		List<Exception> exceptions = new ArrayList<Exception>();
+		for( Bank bank : getBanks() ) {
+			try {
+				bank.validate();
+			} catch( ManyExceptions exception ) {
+				exceptions.add( exception );
+			}
+		}
+		if( !exceptions.isEmpty() ) {
+			throw new ManyExceptions( exceptions );
+		}
+	}
+
 	public Cursor executeQuery( String sql, String... params ) {
 		return repository.getReadableDatabase().rawQuery( sql, params );
+	}
+
+	public void scan( Activity activity ) {
+
+		Intent intent = new Intent( Action.SCAN.toString() );
+
+		intent.putExtra( Extra.SCAN_MODE.toString(), "QR_CODE_MODE" );
+
+		activity.startActivityForResult( intent, Request.SCAN.hashCode() );
+
+	}
+
+	public void deposit( Activity activity, String tokenString ) {
+
+		Intent intent = new Intent( Action.DEPOSIT.toString() );
+
+		intent.putExtra( Extra.TOKEN.toString(), tokenString );
+
+		activity.startActivityForResult( intent, Request.DEPOSIT.hashCode() );
+
+	}
+
+	public void withdraw( Activity activity, int amount, String treasury ) {
+
+		Intent intent = new Intent( Action.WITHDRAW.toString() );
+
+		intent.putExtra( Extra.AMOUNT.toString(), amount );
+		intent.putExtra( Extra.TREASURY.toString(), treasury );
+
+		activity.startActivityForResult( intent, Request.WITHDRAW.hashCode() );
+
+	}
+
+	public void share( Activity activity, String text ) {
+
+		Intent intent = new Intent( Action.SHARE.toString() );
+
+		intent.setType( "text/plain" );
+		intent.putExtra( Intent.EXTRA_TEXT, text );
+
+		activity.startActivityForResult( intent, Request.SHARE.hashCode() );
+
 	}
 
 }

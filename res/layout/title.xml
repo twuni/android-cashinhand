@@ -1,5 +1,35 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="40dp" android:background="#FF009900">
-	<TextView android:layout_width="wrap_content" android:layout_height="40dp" android:textColor="#FFDDFFDD" android:text="@string/cash_in_hand" android:gravity="center_vertical" android:layout_marginLeft="5sp"/>
-	<Button android:layout_width="wrap_content" android:layout_height="40dp" android:text="@string/deposit" android:gravity="center_vertical" android:layout_marginTop="2sp" android:layout_alignParentRight="true" android:onClick="deposit"/>
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="40dp"
+	android:background="#FF009900">
+
+	<TextView
+		android:id="@+id/title"
+		android:layout_width="wrap_content"
+		android:layout_height="40dp"
+		android:textColor="#FFDDFFDD"
+		android:text="@string/cash_in_hand"
+		android:gravity="center_vertical"
+		android:layout_marginLeft="5sp"/>
+
+	<ProgressBar
+		android:id="@+id/loading"
+		android:visibility="gone"
+		android:layout_height="20dp"
+		android:layout_width="20dp"
+		android:layout_marginTop="10dp"
+		android:layout_marginLeft="5dp"
+		android:layout_toRightOf="@+id/title"/>
+
+	<Button
+		android:layout_width="wrap_content"
+		android:layout_height="40dp"
+		android:text="@string/deposit"
+		android:gravity="center_vertical"
+		android:layout_marginTop="2sp"
+		android:layout_alignParentRight="true"
+		android:onClick="deposit"/>
+
 </RelativeLayout>
