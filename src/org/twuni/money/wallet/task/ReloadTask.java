@@ -55,7 +55,10 @@ public class ReloadTask extends AsyncTask<Void, ManyExceptions, Cursor> {
 		adapter.changeCursor( cursor );
 		activity.findViewById( R.id.loading ).setVisibility( View.GONE );
 		if( adapter.isEmpty() ) {
+			activity.findViewById( android.R.id.list ).setVisibility( View.GONE );
 			activity.findViewById( R.id.empty ).setVisibility( View.VISIBLE );
+		} else {
+			activity.findViewById( android.R.id.list ).setVisibility( View.VISIBLE );
 		}
 	}
 
