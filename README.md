@@ -17,6 +17,14 @@ is backed.
 Changelog
 =========
 
+Version 0.2.0
+-------------
+
+ * Switched the storage mechanism from SharedPreferences to SQLite.
+ * Now presenting a selection dialog for making a payment instead of defaulting to sharing via Barcode Scanner.
+ * The Deposit button is now in the title bar.
+ 
+
 Version 0.1.1
 -------------
 
