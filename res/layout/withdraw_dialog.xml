@@ -1,22 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<LinearLayout
+<RelativeLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:gravity="center_vertical"
+	android:paddingRight="20dp"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent">
-
+	
+	<ImageView
+		android:id="@+id/icon"
+		android:src="@drawable/icon"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center_vertical"/>
+		
 	<TextView
-		android:text="$"
-		android:textSize="40dp"
-		android:layout_gravity="center_vertical"
+		android:id="@+id/withdraw_label"
+		android:layout_toRightOf="@+id/icon"
+		android:text="@string/withdraw"
+		android:textSize="30dp"
+		android:textColor="@android:color/white"
+		android:layout_marginLeft="5dp"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"/>
+	
     <EditText
     	android:id="@+id/withdraw_amount"
     	android:hint="0.00"
 		android:inputType="numberDecimal"
 		android:imeOptions="actionSend"
-		android:layout_gravity="center_vertical"
+		android:layout_marginTop="10dp"
+		android:layout_toRightOf="@+id/icon"
+		android:layout_below="@+id/withdraw_label"
     	android:layout_width="fill_parent"
     	android:layout_height="wrap_content"/>
 
-</LinearLayout>
+	<TextView
+		android:text="$"
+		android:textSize="40dp"
+		android:layout_below="@+id/icon"
+		android:layout_toLeftOf="@+id/withdraw_amount"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"/>
+
+</RelativeLayout>

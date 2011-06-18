@@ -11,6 +11,11 @@
 		android:layout_height="40dp"
 		android:textColor="#FFDDFFDD"
 		android:text="@string/cash_in_hand"
+		android:textStyle="bold"
+		android:shadowColor="#FF000000"
+		android:shadowDx="1"
+		android:shadowDy="1"
+		android:shadowRadius="1"
 		android:gravity="center_vertical"
 		android:layout_marginLeft="5sp"/>
 

@@ -7,6 +7,10 @@ import org.twuni.money.wallet.util.DebugUtils;
 import android.app.Dialog;
 import android.content.Context;
 import android.view.KeyEvent;
+import android.view.View;
+import android.view.View.OnFocusChangeListener;
+import android.view.Window;
+import android.view.WindowManager.LayoutParams;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -20,8 +24,9 @@ public class WithdrawDialog extends Dialog {
 
 		super( context );
 
+		requestWindowFeature( Window.FEATURE_NO_TITLE );
+
 		setContentView( R.layout.withdraw_dialog );
-		setTitle( String.format( context.getString( R.string.withdraw_from ), treasury ) );
 
 		EditText input = (EditText) findViewById( R.id.withdraw_amount );
 
@@ -46,6 +51,7 @@ public class WithdrawDialog extends Dialog {
 							dismiss();
 							return true;
 
+						} catch( NumberFormatException exception ) {
 						} catch( Exception exception ) {
 							DebugUtils.handleException( getOwnerActivity(), exception );
 						}
@@ -58,6 +64,24 @@ public class WithdrawDialog extends Dialog {
 
 		} );
 
+		input.setOnFocusChangeListener( new OnFocusChangeListener() {
+
+			@Override
+			public void onFocusChange( View view, boolean hasFocus ) {
+				if( hasFocus ) {
+					getWindow().setSoftInputMode( LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE );
+				}
+			}
+
+		} );
+
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+		EditText input = (EditText) findViewById( R.id.withdraw_amount );
+		input.setText( "" );
 	}
 
 }
