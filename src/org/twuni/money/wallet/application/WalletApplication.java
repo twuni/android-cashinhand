@@ -47,7 +47,8 @@ public class WalletApplication extends Application {
 		TOKEN,
 		AMOUNT,
 		TREASURY,
-		SCAN_MODE;
+		SCAN_MODE,
+		SCAN_RESULT;
 
 	}
 

@@ -70,7 +70,7 @@ public class TreasuryListActivity extends ListActivity {
 		switch( Request.valueOf( requestCode ) ) {
 
 			case SCAN:
-				application.deposit( this, data.getStringExtra( "SCAN_RESULT" ) );
+				application.deposit( this, data.getStringExtra( Extra.SCAN_RESULT.toString() ) );
 				break;
 
 			case WITHDRAW:
