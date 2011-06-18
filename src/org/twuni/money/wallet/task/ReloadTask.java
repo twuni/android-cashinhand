@@ -27,8 +27,8 @@ public class ReloadTask extends AsyncTask<Void, ManyExceptions, Cursor> {
 
 	@Override
 	protected void onPreExecute() {
-		activity.findViewById( R.id.loading ).setVisibility( View.VISIBLE );
-		activity.findViewById( R.id.empty ).setVisibility( View.GONE );
+		setVisibility( R.id.loading, View.VISIBLE );
+		setVisibility( R.id.empty, View.GONE );
 	}
 
 	public void execute() {
@@ -53,13 +53,17 @@ public class ReloadTask extends AsyncTask<Void, ManyExceptions, Cursor> {
 	@Override
 	protected void onPostExecute( Cursor cursor ) {
 		adapter.changeCursor( cursor );
-		activity.findViewById( R.id.loading ).setVisibility( View.GONE );
+		setVisibility( R.id.loading, View.GONE );
 		if( adapter.isEmpty() ) {
-			activity.findViewById( android.R.id.list ).setVisibility( View.GONE );
-			activity.findViewById( R.id.empty ).setVisibility( View.VISIBLE );
+			setVisibility( android.R.id.list, View.GONE );
+			setVisibility( R.id.empty, View.VISIBLE );
 		} else {
-			activity.findViewById( android.R.id.list ).setVisibility( View.VISIBLE );
+			setVisibility( android.R.id.list, View.VISIBLE );
 		}
+	}
+
+	private void setVisibility( int resourceId, int visibility ) {
+		activity.findViewById( resourceId ).setVisibility( visibility );
 	}
 
 }
