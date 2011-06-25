@@ -11,10 +11,12 @@ import org.twuni.money.common.Token;
 import org.twuni.money.common.Treasury;
 import org.twuni.money.common.TreasuryClient;
 import org.twuni.money.common.exception.ManyExceptions;
+import org.twuni.money.wallet.dialog.InstallDialog;
 import org.twuni.money.wallet.repository.TokenRepository;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -137,7 +139,11 @@ public class WalletApplication extends Application {
 
 		intent.putExtra( Extra.SCAN_MODE.toString(), "QR_CODE_MODE" );
 
-		activity.startActivityForResult( intent, Request.SCAN.hashCode() );
+		try {
+			activity.startActivityForResult( intent, Request.SCAN.hashCode() );
+		} catch( ActivityNotFoundException exception ) {
+			new InstallDialog( activity, "com.google.zxing.client.android", "Barcode Scanner" ).show();
+		}
 
 	}
 
