@@ -9,36 +9,5 @@ by securely trading a token that is worth exactly what you say it's worth and is
 Imagine this token as a dollar bill that is worth exactly what you owe. No personal information to divulge, 
 no account data to exploit. Just cash in hand.
 
-The money ultimately comes from treasuries. You'll typically get cash from other people or from a digital 
-exchange of some sort (this protocol's equivalent of ATMs). In this protocol, anyone can form their own 
-treasury, but each treasury has its own merit and worth. It's up to the treasury operator how its currency 
-is backed.
-
-Changelog
-=========
-
-Version 0.2.0
--------------
-
- * Switched the storage mechanism from SharedPreferences to SQLite.
- * Now presenting a selection dialog for making a payment instead of defaulting to sharing via Barcode Scanner.
- * The Deposit button is now in the title bar.
- 
-
-Version 0.1.1
--------------
-
-* HTTPS is now required for Treasury communications.
-* Registered handlers for WITHDRAW and DEPOSIT intents.
-
-Version 0.1.0
--------------
-
-* Initial release to the Android market.
-* Support for payment/deposit via QR codes.
-* Treasury support limited to HTTP, port 8080.
-* Treasury [money.twuni.org] exposes /create API call for testing.
-
-
 [Treasury REST API]: https://sites.google.com/a/twuni.org/digital-currency/treasury/rest-api
 [money.twuni.org]: https://money.twuni.org
