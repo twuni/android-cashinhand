@@ -6,7 +6,7 @@ import android.widget.Toast;
 public class DebugUtils {
 
 	public static void handleException( Context context, Exception exception ) {
-		Toast.makeText( context, exception.getMessage(), Toast.LENGTH_SHORT ).show();
+		Toast.makeText( context, exception.getMessage(), Toast.LENGTH_LONG ).show();
 	}
 
 }

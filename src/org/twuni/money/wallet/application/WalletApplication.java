@@ -11,6 +11,8 @@ import org.twuni.money.common.Token;
 import org.twuni.money.common.Treasury;
 import org.twuni.money.common.TreasuryClient;
 import org.twuni.money.common.exception.ManyExceptions;
+import org.twuni.money.wallet.activity.DepositActivity;
+import org.twuni.money.wallet.activity.WithdrawActivity;
 import org.twuni.money.wallet.dialog.InstallDialog;
 import org.twuni.money.wallet.repository.TokenRepository;
 
@@ -149,9 +151,9 @@ public class WalletApplication extends Application {
 
 	public void deposit( Activity activity, String tokenString ) {
 
-		Intent intent = new Intent( Action.DEPOSIT.toString() );
+		Intent intent = new Intent( activity, DepositActivity.class );
 
-		intent.putExtra( Extra.TOKEN.toString(), tokenString );
+		intent.putExtra( Intent.EXTRA_TEXT, tokenString );
 
 		activity.startActivityForResult( intent, Request.DEPOSIT.hashCode() );
 
@@ -159,7 +161,7 @@ public class WalletApplication extends Application {
 
 	public void withdraw( Activity activity, int amount, String treasury ) {
 
-		Intent intent = new Intent( Action.WITHDRAW.toString() );
+		Intent intent = new Intent( activity, WithdrawActivity.class );
 
 		intent.putExtra( Extra.AMOUNT.toString(), amount );
 		intent.putExtra( Extra.TREASURY.toString(), treasury );

@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.view.Window;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
 
 public class DepositActivity extends Activity {
 
@@ -30,15 +31,25 @@ public class DepositActivity extends Activity {
 			protected Integer handleIntent( Intent intent ) {
 
 				WalletApplication application = (WalletApplication) getApplication();
-				Token token = new Gson().fromJson( intent.getStringExtra( Extra.TOKEN.toString() ), SimpleToken.class );
-				application.getBank( token ).deposit( token );
 
-				return Integer.valueOf( token.getValue() );
+				try {
+				
+					Token token = new Gson().fromJson( intent.getStringExtra( Intent.EXTRA_TEXT ), SimpleToken.class );
+					application.getBank( token ).deposit( token );
+
+					return Integer.valueOf( token.getValue() );
+
+				} catch( JsonParseException exception ) {
+					throw new RuntimeException( getString( R.string.error_invalid_token ), exception );
+				}
 
 			}
 
 			@Override
 			protected void putExtras( Intent data, Integer amount ) {
+				if( data == null || amount == null ) {
+					return;
+				}
 				data.putExtra( Extra.AMOUNT.toString(), amount.intValue() );
 			}
 

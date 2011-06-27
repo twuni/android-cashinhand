@@ -29,4 +29,5 @@
 	<string name="withdraw_instructions">After you have a positive balance, you can make a payment by typing in an amount and tapping the Pay button.</string>
 	<string name="download_required">Download Required</string>
 	<string name="download_message">The %s application must be installed in order to continue. Download it now?</string>
+	<string name="error_invalid_token">The token cannot be deposited because it is not in the correct format.</string>
 </resources>
