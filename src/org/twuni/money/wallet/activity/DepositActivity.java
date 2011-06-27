@@ -12,7 +12,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Window;
 
-import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
 
 public class DepositActivity extends Activity {
@@ -34,7 +34,7 @@ public class DepositActivity extends Activity {
 
 				try {
 				
-					Token token = new Gson().fromJson( intent.getStringExtra( Intent.EXTRA_TEXT ), SimpleToken.class );
+					Token token = new GsonBuilder().disableHtmlEscaping().create().fromJson( intent.getStringExtra( Intent.EXTRA_TEXT ), SimpleToken.class );
 					application.getBank( token ).deposit( token );
 
 					return Integer.valueOf( token.getValue() );

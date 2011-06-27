@@ -9,10 +9,11 @@ import org.twuni.money.common.SimpleRepository;
 import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class PreferencesRepository<T> extends SimpleRepository<T> {
 
-	private final Gson gson = new Gson();
+	private final Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 	private final Type listType;
 
 	private final SharedPreferences preferences;

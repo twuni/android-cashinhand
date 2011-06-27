@@ -12,7 +12,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Window;
 
-import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class WithdrawActivity extends Activity {
 
@@ -40,7 +40,7 @@ public class WithdrawActivity extends Activity {
 			@Override
 			protected void putExtras( Intent data, Token token ) {
 
-				String tokenString = new Gson().toJson( token );
+				String tokenString = new GsonBuilder().disableHtmlEscaping().create().toJson( token );
 
 				data.putExtra( Extra.TOKEN.toString(), tokenString );
 
