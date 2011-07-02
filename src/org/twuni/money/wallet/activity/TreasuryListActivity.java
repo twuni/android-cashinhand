@@ -30,7 +30,13 @@ public class TreasuryListActivity extends ListActivity {
 
 		application = (WalletApplication) getApplication();
 		setContentView( R.layout.treasury_list );
-		adapter = new SimpleCursorAdapter( this, R.layout.treasury_list_item, null, new String [] { "_id", "balance" }, new int [] { R.id.treasury, R.id.balance } );
+		adapter = new SimpleCursorAdapter( this, R.layout.treasury_list_item, null, new String [] {
+		    "_id",
+		    "balance"
+		}, new int [] {
+		    R.id.treasury,
+		    R.id.balance
+		} );
 		setListAdapter( adapter );
 
 		getWindow().setFeatureInt( Window.FEATURE_CUSTOM_TITLE, R.layout.title );
@@ -69,8 +75,8 @@ public class TreasuryListActivity extends ListActivity {
 
 		switch( Request.valueOf( requestCode ) ) {
 
-			case SCAN:
-				application.deposit( this, data.getStringExtra( Extra.SCAN_RESULT.toString() ) );
+			case RECEIVE:
+				application.deposit( this, data.getStringExtra( Intent.EXTRA_TEXT ) );
 				break;
 
 			case WITHDRAW:
@@ -89,7 +95,7 @@ public class TreasuryListActivity extends ListActivity {
 	}
 
 	public void deposit( View view ) {
-		application.scan( this );
+		application.receive( this );
 	}
 
 }

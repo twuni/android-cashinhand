@@ -4,29 +4,46 @@
 	<application android:name=".application.WalletApplication" android:icon="@drawable/icon" android:label="@string/cash_in_hand" android:theme="@style/CashInHandTheme">
 
 		<activity android:name=".activity.TreasuryListActivity" android:label="@string/cash_in_hand">
+
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN"/>
 				<category android:name="android.intent.category.LAUNCHER"/>
 			</intent-filter>
+
 		</activity>
 		
 		<activity android:name=".activity.DepositActivity" android:label="@string/deposit">
+
 			<intent-filter>
 				<action android:name="org.twuni.money.action.DEPOSIT"/>
 				<category android:name="android.intent.category.DEFAULT"/>
 			</intent-filter>
+
 			<intent-filter>
 				<action android:name="android.intent.action.SEND"/>
 				<category android:name="android.intent.category.DEFAULT"/>
 				<data android:mimeType="text/plain"/>
 			</intent-filter>
+
 		</activity>
 
 		<activity android:name=".activity.WithdrawActivity" android:label="@string/withdraw">
+
 			<intent-filter>
 				<action android:name="org.twuni.money.action.WITHDRAW"/>
 				<category android:name="android.intent.category.DEFAULT"/>
 			</intent-filter>
+
+		</activity>
+		
+		<activity android:name=".activity.QRReceiveActivity" android:label="@string/qr_code_scan">
+
+			<intent-filter>
+				<action android:name="android.intent.action.RECEIVE"/>
+				<category android:name="android.intent.category.DEFAULT"/>
+				<data android:mimeType="text/plain"/>
+			</intent-filter>
+
 		</activity>
 
 	</application>

@@ -13,12 +13,10 @@ import org.twuni.money.common.TreasuryClient;
 import org.twuni.money.common.exception.ManyExceptions;
 import org.twuni.money.wallet.activity.DepositActivity;
 import org.twuni.money.wallet.activity.WithdrawActivity;
-import org.twuni.money.wallet.dialog.InstallDialog;
 import org.twuni.money.wallet.repository.TokenRepository;
 
 import android.app.Activity;
 import android.app.Application;
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -31,6 +29,7 @@ public class WalletApplication extends Application {
 		DEPOSIT( "org.twuni.money.action.DEPOSIT" ),
 		WITHDRAW( "org.twuni.money.action.WITHDRAW" ),
 		SCAN( "com.google.zxing.client.android.SCAN" ),
+		RECEIVE( "android.intent.action.RECEIVE" ),
 		SHARE( Intent.ACTION_SEND );
 
 		private final String action;
@@ -61,7 +60,8 @@ public class WalletApplication extends Application {
 		WITHDRAW,
 		DEPOSIT,
 		SCAN,
-		SHARE;
+		SHARE,
+		RECEIVE;
 
 		public static Request valueOf( int hashCode ) {
 			for( Request request : values() ) {
@@ -135,18 +135,10 @@ public class WalletApplication extends Application {
 		return repository.getReadableDatabase().rawQuery( sql, params );
 	}
 
-	public void scan( Activity activity ) {
-
-		Intent intent = new Intent( Action.SCAN.toString() );
-
-		intent.putExtra( Extra.SCAN_MODE.toString(), "QR_CODE_MODE" );
-
-		try {
-			activity.startActivityForResult( intent, Request.SCAN.hashCode() );
-		} catch( ActivityNotFoundException exception ) {
-			new InstallDialog( activity, "com.google.zxing.client.android", "Barcode Scanner" ).show();
-		}
-
+	public void receive( Activity activity ) {
+		Intent intent = new Intent( Action.RECEIVE.toString() );
+		intent.setType( "text/plain" );
+		activity.startActivityForResult( intent, Request.RECEIVE.hashCode() );
 	}
 
 	public void deposit( Activity activity, String tokenString ) {
