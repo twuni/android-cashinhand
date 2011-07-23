@@ -41,7 +41,7 @@ public class WithdrawDialog extends Dialog {
 
 						try {
 
-							int amount = (int) ( Double.parseDouble( view.getText().toString() ) * 100 );
+							int amount = Integer.parseInt( view.getText().toString() );
 
 							if( amount <= 0 ) {
 								return false;

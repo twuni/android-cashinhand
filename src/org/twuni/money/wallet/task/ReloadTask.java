@@ -13,7 +13,7 @@ import android.widget.CursorAdapter;
 
 public class ReloadTask extends AsyncTask<Void, ManyExceptions, Cursor> {
 
-	private static final String TREASURY_BALANCE_QUERY = "SELECT treasury AS _id, '$' || SUM( ROUND( value / 100.00, 2 ) ) AS balance FROM token GROUP BY treasury ORDER BY balance DESC";
+	private static final String TREASURY_BALANCE_QUERY = "SELECT treasury AS _id, SUM( value ) AS balance FROM token GROUP BY treasury ORDER BY balance DESC";
 
 	private final Activity activity;
 	private final WalletApplication application;
