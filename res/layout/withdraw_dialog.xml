@@ -26,7 +26,7 @@
     <EditText
     	android:id="@+id/withdraw_amount"
     	android:hint="0"
-		android:inputType="numberDecimal"
+		android:inputType="number"
 		android:imeOptions="actionSend"
 		android:layout_marginTop="10dp"
 		android:layout_toRightOf="@+id/icon"
