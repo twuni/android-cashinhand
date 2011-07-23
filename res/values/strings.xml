@@ -5,7 +5,7 @@
 	<string name="wallet">Wallet</string>
 	<string name="save">Save</string>
 	<string name="spend">Spend</string>
-	<string name="make_payment">Make a payment</string>
+	<string name="make_payment">Tap to make a payment</string>
 	<string name="receive_money">Receive money</string>
 	<string name="scan">Scan</string>
 	<string name="balance">Balance</string>

@@ -17,6 +17,10 @@ public class QRReceiveActivity extends Activity {
 
 		super.onCreate( savedInstanceState );
 
+		if( savedInstanceState != null ) {
+			return;
+		}
+
 		Intent intent = new Intent( Action.SCAN.toString() );
 
 		intent.putExtra( Extra.SCAN_MODE.toString(), "QR_CODE_MODE" );
@@ -34,6 +38,8 @@ public class QRReceiveActivity extends Activity {
 
 		if( resultCode != RESULT_OK ) {
 			super.onActivityResult( requestCode, resultCode, data );
+			setResult( RESULT_CANCELED, new Intent() );
+			finish();
 			return;
 		}
 
@@ -46,10 +52,10 @@ public class QRReceiveActivity extends Activity {
 	}
 
 	private void setTextResult( String text ) {
-	    Intent result = new Intent();
-	    result.putExtra( Intent.EXTRA_TEXT, text );
-	    setResult( RESULT_OK, result );
-	    finish();
-    }
+		Intent result = new Intent();
+		result.putExtra( Intent.EXTRA_TEXT, text );
+		setResult( RESULT_OK, result );
+		finish();
+	}
 
 }

@@ -21,10 +21,11 @@
     	android:paddingLeft="5sp"/>
     	
     <TextView
-    	android:text="Tap to make a payment"
+    	android:text="@string/make_payment"
     	android:layout_alignParentRight="true"
+    	android:layout_alignParentBottom="true"
     	android:paddingRight="5sp"
-    	android:paddingTop="2sp"
+    	android:paddingBottom="2sp"
     	android:layout_width="wrap_content"
     	android:layout_height="wrap_content"/>
 
