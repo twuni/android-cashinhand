@@ -8,6 +8,6 @@
 	<classpathentry kind="lib" path="lib/common-crypto-0.1.2.jar" sourcepath="/common-crypto"/>
 	<classpathentry kind="lib" path="lib/money-common-0.2.3.jar"/>
 	<classpathentry kind="lib" path="lib/common-0.1.0.jar"/>
-	<classpathentry kind="lib" path="lib/treasury-client-0.2.4-SNAPSHOT.jar" sourcepath="/treasury-client"/>
+	<classpathentry kind="lib" path="lib/treasury-client-0.2.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
