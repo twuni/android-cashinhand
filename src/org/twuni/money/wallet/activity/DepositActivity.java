@@ -1,5 +1,7 @@
 package org.twuni.money.wallet.activity;
 
+import org.twuni.common.crypto.rsa.PrivateKey;
+import org.twuni.money.common.ShareableToken;
 import org.twuni.money.common.SimpleToken;
 import org.twuni.money.common.Token;
 import org.twuni.money.wallet.R;
@@ -33,8 +35,9 @@ public class DepositActivity extends Activity {
 				WalletApplication application = (WalletApplication) getApplication();
 
 				try {
-				
-					Token token = new GsonBuilder().disableHtmlEscaping().create().fromJson( intent.getStringExtra( Intent.EXTRA_TEXT ), SimpleToken.class );
+
+					ShareableToken shareable = new GsonBuilder().disableHtmlEscaping().create().fromJson( intent.getStringExtra( Intent.EXTRA_TEXT ), ShareableToken.class );
+					Token token = new SimpleToken( shareable.getTreasury(), PrivateKey.deserialize( shareable.getActionKey() ), PrivateKey.deserialize( shareable.getOwnerKey() ), shareable.getValue() );
 					application.getBank( token ).deposit( token );
 
 					return Integer.valueOf( token.getValue() );
