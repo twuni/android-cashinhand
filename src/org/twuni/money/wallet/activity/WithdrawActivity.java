@@ -1,5 +1,6 @@
 package org.twuni.money.wallet.activity;
 
+import org.twuni.money.common.ShareableToken;
 import org.twuni.money.common.Token;
 import org.twuni.money.common.Treasury;
 import org.twuni.money.wallet.R;
@@ -12,9 +13,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Window;
 
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 public class WithdrawActivity extends Activity {
+
+	private final Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 
 	@Override
 	protected void onCreate( Bundle savedInstanceState ) {
@@ -40,7 +44,7 @@ public class WithdrawActivity extends Activity {
 			@Override
 			protected void putExtras( Intent data, Token token ) {
 
-				String tokenString = new GsonBuilder().disableHtmlEscaping().create().toJson( token );
+				String tokenString = gson.toJson( new ShareableToken( token ) );
 
 				data.putExtra( Extra.TOKEN.toString(), tokenString );
 

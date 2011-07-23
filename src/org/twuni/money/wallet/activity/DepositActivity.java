@@ -14,10 +14,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Window;
 
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
 
 public class DepositActivity extends Activity {
+
+	private final Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 
 	@Override
 	protected void onCreate( Bundle savedInstanceState ) {
@@ -36,7 +39,7 @@ public class DepositActivity extends Activity {
 
 				try {
 
-					ShareableToken shareable = new GsonBuilder().disableHtmlEscaping().create().fromJson( intent.getStringExtra( Intent.EXTRA_TEXT ), ShareableToken.class );
+					ShareableToken shareable = gson.fromJson( intent.getStringExtra( Intent.EXTRA_TEXT ), ShareableToken.class );
 					Token token = new SimpleToken( shareable.getTreasury(), PrivateKey.deserialize( shareable.getActionKey() ), PrivateKey.deserialize( shareable.getOwnerKey() ), shareable.getValue() );
 					application.getBank( token ).deposit( token );
 
