@@ -42,6 +42,10 @@ public abstract class BankTask<Result> extends AsyncTask<Intent, Exception, Resu
 
 	@Override
 	protected final void onPostExecute( Result result ) {
+		if( result == null ) {
+			onCancelled();
+			return;
+		}
 		Intent data = new Intent();
 		putExtras( data, result );
 		activity.setResult( Activity.RESULT_OK, data );
