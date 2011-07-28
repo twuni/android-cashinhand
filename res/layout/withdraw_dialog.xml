@@ -34,4 +34,12 @@
     	android:layout_width="fill_parent"
     	android:layout_height="wrap_content"/>
 
+	<TextView
+		android:text="@string/currency_sign"
+		android:textSize="40dp"
+		android:layout_below="@+id/icon"
+		android:layout_toLeftOf="@+id/withdraw_amount"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"/>
+	
 </RelativeLayout>

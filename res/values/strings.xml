@@ -3,6 +3,7 @@
 	<string name="cash_in_hand">Cash in Hand</string>
 	<string name="cash">Cash</string>
 	<string name="wallet">Wallet</string>
+	<string name="share_via">Share via</string>
 	<string name="save">Save</string>
 	<string name="spend">Spend</string>
 	<string name="make_payment">Tap to make a payment</string>
@@ -22,6 +23,7 @@
 	<string name="qr_code_scan">QR Code Scan</string>
 	<string name="qr_code">QR Code</string>
 	<string name="treasury">Treasury</string>
+	<string name="currency_sign">¤</string>
 	<string name="treasury_selection">Treasury selection</string>
 	<string name="withdraw_from">Withdraw from %s</string>
 	<string name="empty_wallet">Your wallet is empty.</string>

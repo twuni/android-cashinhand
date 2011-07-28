@@ -11,11 +11,22 @@
     	android:paddingTop="2sp"/>
 
     <TextView
-    	android:text="$0.00"
+    	android:text="@string/currency_sign"
+    	android:id="@+id/currency_sign"
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:layout_below="@+id/treasury"
+    	android:textColor="#FF009900"
+    	android:textSize="20dp"
+    	android:paddingLeft="5sp"/>
+    	
+    <TextView
+    	android:text="0"
     	android:id="@+id/balance"
     	android:layout_width="wrap_content"
     	android:layout_height="wrap_content"
-    	android:layout_below="@id/treasury"
+    	android:layout_toRightOf="@+id/currency_sign"
+    	android:layout_below="@+id/treasury"
     	android:textColor="#FF009900"
     	android:textSize="20dp"
     	android:paddingLeft="5sp"/>
