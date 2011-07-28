@@ -11,6 +11,7 @@ import org.twuni.money.common.Token;
 import org.twuni.money.common.Treasury;
 import org.twuni.money.common.exception.ManyExceptions;
 import org.twuni.money.treasury.client.TreasuryClient;
+import org.twuni.money.wallet.R;
 import org.twuni.money.wallet.activity.DepositActivity;
 import org.twuni.money.wallet.activity.WithdrawActivity;
 import org.twuni.money.wallet.repository.TokenRepository;
@@ -169,7 +170,9 @@ public class WalletApplication extends Application {
 		intent.setType( "text/plain" );
 		intent.putExtra( Intent.EXTRA_TEXT, text );
 
-		activity.startActivityForResult( intent, Request.SHARE.hashCode() );
+		Intent chooser = Intent.createChooser( intent, activity.getString( R.string.share_via ) );
+
+		activity.startActivityForResult( chooser, Request.SHARE.hashCode() );
 
 	}
 
