@@ -10,9 +10,15 @@ import org.twuni.money.wallet.task.ReloadTask;
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
@@ -38,6 +44,7 @@ public class TreasuryListActivity extends ListActivity {
 		    R.id.balance
 		} );
 		setListAdapter( adapter );
+		registerForContextMenu( getListView() );
 
 		getWindow().setFeatureInt( Window.FEATURE_CUSTOM_TITLE, R.layout.title );
 
@@ -50,9 +57,30 @@ public class TreasuryListActivity extends ListActivity {
 	}
 
 	@Override
+	public void onCreateContextMenu( ContextMenu menu, View v, ContextMenuInfo menuInfo ) {
+		super.onCreateContextMenu( menu, v, menuInfo );
+		selectTreasury( ( (AdapterContextMenuInfo) menuInfo ).position );
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate( R.menu.treasury, menu );
+	}
+
+	@Override
+	public boolean onContextItemSelected( MenuItem item ) {
+		switch( item.getItemId() ) {
+			case R.id.about:
+				startActivity( new Intent( Intent.ACTION_VIEW, Uri.parse( selectedTreasury ) ) );
+				return true;
+			case R.id.withdraw:
+				showDialog( WithdrawDialog.ID );
+				return true;
+			default:
+				return super.onContextItemSelected( item );
+		}
+	}
+
+	@Override
 	protected void onListItemClick( ListView l, View v, int position, long id ) {
-		adapter.getCursor().moveToPosition( position );
-		selectedTreasury = adapter.getCursor().getString( 0 );
+		selectTreasury( position );
 		showDialog( WithdrawDialog.ID );
 	}
 
@@ -92,6 +120,11 @@ public class TreasuryListActivity extends ListActivity {
 
 		}
 
+	}
+
+	private void selectTreasury( int position ) {
+		adapter.getCursor().moveToPosition( position );
+		selectedTreasury = adapter.getCursor().getString( 0 );
 	}
 
 	public void deposit( View view ) {
