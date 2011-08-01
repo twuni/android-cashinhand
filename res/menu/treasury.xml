@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-	<item android:id="@+id/withdraw" android:title="@string/withdraw"></item>
-	<item android:id="@+id/about" android:title="@string/about"></item>
+	<item android:id="@+id/withdraw" android:title="@string/withdraw"/>
+	<item android:id="@+id/refresh" android:title="@string/refresh"/>
+	<item android:id="@+id/about" android:title="@string/about"/>
+	<item android:id="@+id/abandon" android:title="@string/abandon"/>
 </menu>

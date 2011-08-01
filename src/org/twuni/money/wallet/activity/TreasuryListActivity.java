@@ -53,7 +53,10 @@ public class TreasuryListActivity extends ListActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		new ReloadTask( this, application, adapter ).execute();
+		Intent intent = getIntent();
+		if( intent != null && Intent.ACTION_MAIN.equals( intent.getAction() ) && intent.getCategories() != null && intent.getCategories().contains( Intent.CATEGORY_LAUNCHER ) ) {
+			new ReloadTask( this, application, adapter ).execute();
+		}
 	}
 
 	@Override
@@ -72,6 +75,12 @@ public class TreasuryListActivity extends ListActivity {
 				return true;
 			case R.id.withdraw:
 				showDialog( WithdrawDialog.ID );
+				return true;
+			case R.id.abandon:
+				application.executeQuery( "DELETE FROM token WHERE treasury = ?", selectedTreasury );
+				selectedTreasury = null;
+			case R.id.refresh:
+				new ReloadTask( this, application, adapter ).execute();
 				return true;
 			default:
 				return super.onContextItemSelected( item );
