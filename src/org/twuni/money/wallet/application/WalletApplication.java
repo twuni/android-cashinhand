@@ -141,6 +141,16 @@ public class WalletApplication extends Application {
 		return repository.getReadableDatabase().rawQuery( sql, params );
 	}
 
+	public void deleteTreasury( String treasury ) {
+		SQLiteDatabase database = repository.getWritableDatabase();
+		database.beginTransaction();
+		database.delete( "token", "treasury = ?", new String [] {
+			treasury
+		} );
+		database.setTransactionSuccessful();
+		database.endTransaction();
+	}
+
 	public void receive( Activity activity ) {
 		Intent intent = new Intent( Action.RECEIVE.toString() );
 		intent.setType( "text/plain" );

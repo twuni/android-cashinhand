@@ -77,7 +77,7 @@ public class TreasuryListActivity extends ListActivity {
 				showDialog( WithdrawDialog.ID );
 				return true;
 			case R.id.abandon:
-				application.executeQuery( "DELETE FROM token WHERE treasury = ?", selectedTreasury );
+				application.deleteTreasury( selectedTreasury );
 				selectedTreasury = null;
 			case R.id.refresh:
 				new ReloadTask( this, application, adapter ).execute();
