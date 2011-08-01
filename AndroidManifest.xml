@@ -46,6 +46,26 @@
 
 		</activity>
 
+		<activity android:name=".activity.PasteActivity" android:label="@string/paste_from_clipboard" android:icon="@drawable/clipboard">
+
+			<intent-filter>
+				<action android:name="android.intent.action.RECEIVE"/>
+				<category android:name="android.intent.category.DEFAULT"/>
+				<data android:mimeType="text/plain"/>
+			</intent-filter>
+
+		</activity>
+
+		<activity android:name=".activity.CopyActivity" android:label="@string/copy_to_clipboard" android:icon="@drawable/clipboard">
+
+			<intent-filter>
+				<action android:name="android.intent.action.SEND"/>
+				<category android:name="android.intent.category.DEFAULT"/>
+				<data android:mimeType="text/plain"/>
+			</intent-filter>
+
+		</activity>
+
 	</application>
 
 	<uses-permission android:name="android.permission.INTERNET"/>
