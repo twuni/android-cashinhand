@@ -1,25 +1,25 @@
 package org.twuni.money.wallet.task;
 
+import java.util.List;
+
 import org.twuni.money.common.exception.ManyExceptions;
 import org.twuni.money.wallet.R;
+import org.twuni.money.wallet.adapter.TreasuryView;
+import org.twuni.money.wallet.adapter.TreasuryViewAdapter;
 import org.twuni.money.wallet.application.WalletApplication;
 import org.twuni.money.wallet.util.DebugUtils;
 
 import android.app.Activity;
-import android.database.Cursor;
 import android.os.AsyncTask;
 import android.view.View;
-import android.widget.CursorAdapter;
 
-public class ReloadTask extends AsyncTask<Void, ManyExceptions, Cursor> {
-
-	private static final String TREASURY_BALANCE_QUERY = "SELECT treasury AS _id, SUM( value ) AS balance FROM token GROUP BY treasury ORDER BY balance DESC";
+public class ReloadTask extends AsyncTask<Void, ManyExceptions, List<TreasuryView>> {
 
 	private final Activity activity;
 	private final WalletApplication application;
-	private final CursorAdapter adapter;
+	private final TreasuryViewAdapter adapter;
 
-	public ReloadTask( Activity activity, WalletApplication application, CursorAdapter adapter ) {
+	public ReloadTask( Activity activity, WalletApplication application, TreasuryViewAdapter adapter ) {
 		this.activity = activity;
 		this.application = application;
 		this.adapter = adapter;
@@ -36,13 +36,13 @@ public class ReloadTask extends AsyncTask<Void, ManyExceptions, Cursor> {
 	}
 
 	@Override
-	protected Cursor doInBackground( Void... unused ) {
+	protected List<TreasuryView> doInBackground( Void... unused ) {
 		try {
 			application.checkIntegrity();
 		} catch( ManyExceptions exceptions ) {
 			publishProgress( exceptions );
 		}
-		return application.executeQuery( TREASURY_BALANCE_QUERY, new String [0] );
+		return application.getBalance();
 	}
 
 	@Override
@@ -51,8 +51,8 @@ public class ReloadTask extends AsyncTask<Void, ManyExceptions, Cursor> {
 	};
 
 	@Override
-	protected void onPostExecute( Cursor cursor ) {
-		adapter.changeCursor( cursor );
+	protected void onPostExecute( List<TreasuryView> views ) {
+		adapter.update( views );
 		setVisibility( R.id.loading, View.GONE );
 		if( adapter.isEmpty() ) {
 			setVisibility( android.R.id.list, View.GONE );

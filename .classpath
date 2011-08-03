@@ -5,9 +5,11 @@
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="lib" path="lib/gson-1.7.1.jar"/>
 	<classpathentry kind="lib" path="lib/common-crypto-rsa-0.1.2.jar"/>
-	<classpathentry kind="lib" path="lib/common-crypto-0.1.2.jar" sourcepath="/common-crypto"/>
+	<classpathentry kind="lib" path="lib/common-crypto-0.1.2.jar"/>
 	<classpathentry kind="lib" path="lib/money-common-0.2.3.jar"/>
 	<classpathentry kind="lib" path="lib/common-0.1.0.jar"/>
 	<classpathentry kind="lib" path="lib/treasury-client-0.2.4.jar"/>
+	<classpathentry kind="lib" path="lib/common-persistence-android-0.1.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/common-persistence-0.1.4-SNAPSHOT.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

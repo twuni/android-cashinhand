@@ -35,9 +35,10 @@ public class WithdrawActivity extends Activity {
 
 				WalletApplication application = (WalletApplication) getApplication();
 				int amount = intent.getIntExtra( Extra.AMOUNT.toString(), 0 );
-				Treasury treasury = application.getTreasury( intent.getStringExtra( Extra.TREASURY.toString() ) );
+				String treasuryUrl = intent.getStringExtra( Extra.TREASURY.toString() );
+				Treasury treasury = application.getTreasury( treasuryUrl );
 
-				return application.getBank( treasury ).withdraw( amount );
+				return application.getBank( treasury, treasuryUrl ).withdraw( amount );
 
 			}
 

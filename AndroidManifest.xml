@@ -11,7 +11,7 @@
 			</intent-filter>
 
 		</activity>
-		
+
 		<activity android:name=".activity.DepositActivity" android:label="@string/deposit">
 
 			<intent-filter>
@@ -35,8 +35,8 @@
 			</intent-filter>
 
 		</activity>
-		
-		<activity android:name=".activity.QRReceiveActivity" android:label="@string/qr_code_scan">
+
+		<activity android:name=".activity.QRReceiveActivity" android:label="@string/qr_code_scan" android:icon="@drawable/qrcode">
 
 			<intent-filter>
 				<action android:name="android.intent.action.RECEIVE"/>

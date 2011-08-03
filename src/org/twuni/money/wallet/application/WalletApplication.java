@@ -14,14 +14,14 @@ import org.twuni.money.treasury.client.TreasuryClient;
 import org.twuni.money.wallet.R;
 import org.twuni.money.wallet.activity.DepositActivity;
 import org.twuni.money.wallet.activity.WithdrawActivity;
+import org.twuni.money.wallet.adapter.TreasuryView;
 import org.twuni.money.wallet.repository.TokenRepository;
+import org.twuni.money.wallet.repository.TreasuryRepository;
 
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.http.AndroidHttpClient;
 
 public class WalletApplication extends Application {
@@ -77,7 +77,7 @@ public class WalletApplication extends Application {
 	}
 
 	private HttpClient client;
-	private TokenRepository repository;
+	private TreasuryRepository treasuryRepository;
 
 	@Override
 	public void onCreate() {
@@ -85,16 +85,16 @@ public class WalletApplication extends Application {
 		super.onCreate();
 
 		client = AndroidHttpClient.newInstance( "Android/Cash in Hand", this );
-		repository = new TokenRepository( this );
+		treasuryRepository = new TreasuryRepository( this );
 
 	}
 
 	public Bank getBank( Token token ) {
-		return getBank( getTreasury( token.getTreasury() ) );
+		return getBank( getTreasury( token.getTreasury() ), token.getTreasury() );
 	}
 
-	public Bank getBank( Treasury treasury ) {
-		return new Bank( repository, treasury );
+	public Bank getBank( Treasury treasury, String treasuryUrl ) {
+		return new Bank( new TokenRepository( this, treasuryUrl ), treasury );
 	}
 
 	public Treasury getTreasury( String domain ) {
@@ -102,23 +102,17 @@ public class WalletApplication extends Application {
 	}
 
 	public Set<Treasury> getTreasuries() {
-		SQLiteDatabase database = repository.getReadableDatabase();
-		Cursor cursor = database.rawQuery( "SELECT DISTINCT treasury FROM token", new String [0] );
 		Set<Treasury> treasuries = new HashSet<Treasury>();
-		while( cursor.moveToNext() ) {
-			treasuries.add( new TreasuryClient( client, cursor.getString( 0 ) ) );
+		for( String url : treasuryRepository.list() ) {
+			treasuries.add( getTreasury( url ) );
 		}
 		return treasuries;
 	}
 
 	public Set<Bank> getBanks() {
 		Set<Bank> banks = new HashSet<Bank>();
-		SQLiteDatabase database = repository.getReadableDatabase();
-		Cursor cursor = database.rawQuery( "SELECT DISTINCT treasury FROM token", new String [0] );
-		while( cursor.moveToNext() ) {
-			String treasuryUrl = cursor.getString( 0 );
-			Treasury treasury = new TreasuryClient( client, treasuryUrl );
-			banks.add( getBank( treasury ) );
+		for( String url : treasuryRepository.list() ) {
+			banks.add( new Bank( new TokenRepository( this, url ), getTreasury( url ) ) );
 		}
 		return banks;
 	}
@@ -137,18 +131,26 @@ public class WalletApplication extends Application {
 		}
 	}
 
-	public Cursor executeQuery( String sql, String... params ) {
-		return repository.getReadableDatabase().rawQuery( sql, params );
+	public List<TreasuryView> getBalance() {
+		List<TreasuryView> views = new ArrayList<TreasuryView>();
+		for( String url : treasuryRepository.list() ) {
+			views.add( new TreasuryView( url, getBalance( url ) ) );
+		}
+		return views;
+	}
+
+	public int getBalance( String treasury ) {
+		TokenRepository tokenRepository = treasuryRepository.getTokenRepository( treasury );
+		List<Token> tokens = tokenRepository.list();
+		int balance = 0;
+		for( Token token : tokens ) {
+			balance += token.getValue();
+		}
+		return balance;
 	}
 
 	public void deleteTreasury( String treasury ) {
-		SQLiteDatabase database = repository.getWritableDatabase();
-		database.beginTransaction();
-		database.delete( "token", "treasury = ?", new String [] {
-			treasury
-		} );
-		database.setTransactionSuccessful();
-		database.endTransaction();
+		treasuryRepository.delete( treasury );
 	}
 
 	public void receive( Activity activity ) {
@@ -160,7 +162,7 @@ public class WalletApplication extends Application {
 	public void deposit( Activity activity, String tokenString ) {
 		Intent intent = new Intent( activity, DepositActivity.class );
 		intent.putExtra( Intent.EXTRA_TEXT, tokenString );
-		startActivityForResult( activity, intent, R.string.deposit, Request.DEPOSIT );
+		startActivityForResult( activity, intent, Request.DEPOSIT );
 	}
 
 	public void withdraw( Activity activity, int amount, String treasury ) {

@@ -1,6 +1,7 @@
 package org.twuni.money.wallet.activity;
 
 import org.twuni.money.wallet.R;
+import org.twuni.money.wallet.adapter.TreasuryViewAdapter;
 import org.twuni.money.wallet.application.WalletApplication;
 import org.twuni.money.wallet.application.WalletApplication.Extra;
 import org.twuni.money.wallet.application.WalletApplication.Request;
@@ -20,12 +21,11 @@ import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 
 public class TreasuryListActivity extends ListActivity {
 
 	private WalletApplication application;
-	private SimpleCursorAdapter adapter;
+	private TreasuryViewAdapter adapter;
 	private String selectedTreasury;
 
 	@Override
@@ -36,13 +36,7 @@ public class TreasuryListActivity extends ListActivity {
 
 		application = (WalletApplication) getApplication();
 		setContentView( R.layout.treasury_list );
-		adapter = new SimpleCursorAdapter( this, R.layout.treasury_list_item, null, new String [] {
-		    "_id",
-		    "balance"
-		}, new int [] {
-		    R.id.treasury,
-		    R.id.balance
-		} );
+		adapter = new TreasuryViewAdapter( this );
 		setListAdapter( adapter );
 		registerForContextMenu( getListView() );
 
@@ -132,8 +126,7 @@ public class TreasuryListActivity extends ListActivity {
 	}
 
 	private void selectTreasury( int position ) {
-		adapter.getCursor().moveToPosition( position );
-		selectedTreasury = adapter.getCursor().getString( 0 );
+		selectedTreasury = adapter.getViews().get( position ).getUrl();
 	}
 
 	public void deposit( View view ) {
