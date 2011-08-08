@@ -8,8 +8,8 @@
 	<classpathentry kind="lib" path="lib/common-crypto-0.1.2.jar"/>
 	<classpathentry kind="lib" path="lib/money-common-0.2.3.jar"/>
 	<classpathentry kind="lib" path="lib/common-0.1.0.jar"/>
-	<classpathentry kind="lib" path="lib/treasury-client-0.2.4.jar"/>
-	<classpathentry kind="lib" path="lib/common-persistence-android-0.1.0-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="lib/common-persistence-0.1.4-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/treasury-client-0.2.5.jar"/>
+	<classpathentry kind="lib" path="lib/common-persistence-0.1.4.jar"/>
+	<classpathentry kind="lib" path="lib/common-persistence-android-0.1.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
