@@ -81,6 +81,8 @@ public class TreasuryRepository implements Repository<String, String> {
 
 		} );
 
+		connection.close();
+
 	}
 
 	@Override
@@ -108,6 +110,8 @@ public class TreasuryRepository implements Repository<String, String> {
 
 		} );
 
+		connection.close();
+
 		return result.get( 0 );
 
 	}
@@ -127,6 +131,8 @@ public class TreasuryRepository implements Repository<String, String> {
 			}
 
 		} );
+
+		connection.close();
 
 		return result;
 
@@ -163,6 +169,8 @@ public class TreasuryRepository implements Repository<String, String> {
 			}
 
 		} );
+
+		connection.close();
 
 	}
 

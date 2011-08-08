@@ -63,6 +63,8 @@ public class TokenRepository implements Repository<String, Token> {
 
 		} );
 
+		connection.close();
+
 	}
 
 	@Override
@@ -104,6 +106,8 @@ public class TokenRepository implements Repository<String, Token> {
 
 		} );
 
+		connection.close();
+
 		return result.get( 0 );
 
 	}
@@ -128,6 +132,8 @@ public class TokenRepository implements Repository<String, Token> {
 			}
 
 		} );
+
+		connection.close();
 
 		return result;
 
@@ -172,6 +178,8 @@ public class TokenRepository implements Repository<String, Token> {
 			}
 
 		} );
+
+		connection.close();
 
 	}
 
