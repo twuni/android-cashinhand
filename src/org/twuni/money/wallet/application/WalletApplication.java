@@ -134,7 +134,11 @@ public class WalletApplication extends Application {
 	public List<TreasuryView> getBalance() {
 		List<TreasuryView> views = new ArrayList<TreasuryView>();
 		for( String url : treasuryRepository.list() ) {
-			views.add( new TreasuryView( url, getBalance( url ) ) );
+			int balance = getBalance( url );
+			if( balance <= 0 ) {
+				continue;
+			}
+			views.add( new TreasuryView( url, balance ) );
 		}
 		return views;
 	}

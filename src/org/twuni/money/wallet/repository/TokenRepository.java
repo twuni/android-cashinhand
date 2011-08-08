@@ -13,6 +13,7 @@ import org.twuni.common.persistence.Session;
 import org.twuni.common.persistence.Transaction;
 import org.twuni.common.persistence.android.Connection;
 import org.twuni.common.persistence.android.Database;
+import org.twuni.common.persistence.exception.RollbackException;
 import org.twuni.money.common.Repository;
 import org.twuni.money.common.SimpleToken;
 import org.twuni.money.common.Token;
@@ -41,8 +42,10 @@ public class TokenRepository implements Repository<String, Token> {
 
 	private final String treasuryUrl;
 	private final Database database;
+	private final Context context;
 
 	public TokenRepository( Context context, String treasuryUrl ) {
+		this.context = context;
 		this.treasuryUrl = treasuryUrl;
 		this.database = new Database( context, String.format( "wallet_%s", Integer.valueOf( treasuryUrl.hashCode() ) ), HISTORY[HISTORY.length - 1].getSequence(), HISTORY );
 	}
@@ -144,6 +147,17 @@ public class TokenRepository implements Repository<String, Token> {
 
 		} );
 
+		save( token.getTreasury() );
+
+	}
+
+	private void save( String treasuryUrl ) {
+		TreasuryRepository treasuryRepository = new TreasuryRepository( context );
+		try {
+			treasuryRepository.findById( treasuryUrl );
+		} catch( RollbackException exception ) {
+			treasuryRepository.save( treasuryUrl );
+		}
 	}
 
 	protected void executeWritable( final String sql, final Parameters parameters ) {

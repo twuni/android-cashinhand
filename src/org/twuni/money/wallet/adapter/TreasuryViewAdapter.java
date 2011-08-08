@@ -6,6 +6,7 @@ import java.util.List;
 import org.twuni.money.wallet.R;
 
 import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -49,13 +50,20 @@ public class TreasuryViewAdapter extends BaseAdapter {
 	@Override
 	public View getView( int position, View convertView, ViewGroup parent ) {
 
-		RelativeLayout layout = (RelativeLayout) View.inflate( context, R.layout.treasury_list_item, parent );
+		RelativeLayout layout = null;
+
+		if( convertView == null ) {
+			layout = (RelativeLayout) LayoutInflater.from( context ).inflate( R.layout.treasury_list_item, null );
+		} else {
+			layout = (RelativeLayout) convertView;
+		}
+
 		TextView balance = (TextView) layout.findViewById( R.id.balance );
 		TextView url = (TextView) layout.findViewById( R.id.treasury );
 
 		TreasuryView treasuryView = (TreasuryView) getItem( position );
 
-		balance.setText( treasuryView.getBalance() );
+		balance.setText( Integer.toString( treasuryView.getBalance() ) );
 		url.setText( treasuryView.getUrl() );
 
 		return layout;

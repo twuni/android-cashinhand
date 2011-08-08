@@ -15,7 +15,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.MenuInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -45,6 +45,22 @@ public class TreasuryListActivity extends ListActivity {
 	}
 
 	@Override
+	public boolean onCreateOptionsMenu( Menu menu ) {
+		getMenuInflater().inflate( R.menu.treasury_list, menu );
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected( MenuItem item ) {
+		switch( item.getItemId() ) {
+			case R.id.refresh:
+				new ReloadTask( this, application, adapter ).execute();
+				return true;
+		}
+		return super.onOptionsItemSelected( item );
+	}
+
+	@Override
 	protected void onResume() {
 		super.onResume();
 		Intent intent = getIntent();
@@ -57,8 +73,7 @@ public class TreasuryListActivity extends ListActivity {
 	public void onCreateContextMenu( ContextMenu menu, View v, ContextMenuInfo menuInfo ) {
 		super.onCreateContextMenu( menu, v, menuInfo );
 		selectTreasury( ( (AdapterContextMenuInfo) menuInfo ).position );
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate( R.menu.treasury, menu );
+		getMenuInflater().inflate( R.menu.treasury, menu );
 	}
 
 	@Override
