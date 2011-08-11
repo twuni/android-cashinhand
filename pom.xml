@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.twuni</groupId>
+	<artifactId>android-cashinhand</artifactId>
+	<version>0.2.7-SNAPSHOT</version>
+	<packaging>apk</packaging>
+
+	<name>Cash in Hand</name>
+
+	 <dependencies>
+
+		<dependency>
+			<groupId>com.google.android</groupId>
+			<artifactId>android</artifactId>
+			<version>2.2.1</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.twuni</groupId>
+			<artifactId>common</artifactId>
+			<version>0.1.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.twuni</groupId>
+			<artifactId>common-crypto</artifactId>
+			<version>0.1.3-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.twuni</groupId>
+			<artifactId>common-crypto-rsa</artifactId>
+			<version>0.1.3-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.twuni</groupId>
+			<artifactId>common-persistence</artifactId>
+			<version>0.1.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.twuni</groupId>
+			<artifactId>common-persistence-android</artifactId>
+			<version>0.1.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.twuni.money</groupId>
+			<artifactId>common</artifactId>
+			<version>0.2.5-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.twuni.money</groupId>
+			<artifactId>treasury-client</artifactId>
+			<version>0.2.6-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>1.7.1</version>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+
+		<pluginManagement>
+
+			<plugins>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-resources-plugin</artifactId>
+					<configuration>
+						<encoding>UTF-8</encoding>
+					</configuration>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<configuration>
+						<encoding>UTF-8</encoding>
+						<source>1.6</source>
+						<target>1.6</target>
+					</configuration>
+				</plugin>
+
+			</plugins>
+
+		</pluginManagement>
+
+		<plugins>
+
+			<plugin>
+				<groupId>com.pyx4me</groupId>
+				<artifactId>proguard-maven-plugin</artifactId>
+				<version>2.0.4</version>
+				<executions>
+					<execution>
+						<phase>process-classes</phase>
+						<goals>
+							<goal>proguard</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<proguardVersion>4.4</proguardVersion>
+					<injar>android-classes</injar>
+					<libs>
+						<lib>${java.home}/lib/rt.jar</lib>
+					</libs>
+					<obfuscate>false</obfuscate>
+					<options>
+						<option>-dontusemixedcaseclassnames</option>
+						<option>-dontskipnonpubliclibraryclasses</option>
+						<option>-dontpreverify</option>
+						<option>-verbose</option>
+						<option>-dontoptimize</option>
+						<option>-ignorewarnings</option>
+						<option>-keep public class * extends android.app.Activity</option>
+						<option>-keep public class * extends android.app.Application</option>
+						<option>-keep public class * extends android.app.Service</option>
+						<option>-keep public class * extends android.content.BroadcastReceiver</option>
+						<option>-keep public class * extends android.content.ContentProvider</option>
+						<option>-keep public class * extends android.app.backup.BackupAgentHelper</option>
+						<option>-keep public class * extends android.preference.Preference</option>
+						<option>-keep public class * extends com.android.vending.licensing.ILicensingService</option>
+						<option>-keepclasseswithmembernames class * { native &lt;methods&gt;; }</option>
+						<option>-keepclasseswithmembernames class * { public &lt;init&gt;(android.content.Context, android.util.AttributeSet); }</option>
+						<option>-keepclasseswithmembernames class * { public &lt;init&gt;(android.content.Context, android.util.AttributeSet, int); }</option>
+						<option>-keepclassmembers enum * { public static **[] values(); public static ** valueOf(java.lang.String); }</option>
+						<option>-keepclassmembers class * { public void deposit(android.view.View); }</option>
+						<option>-keep class * implements android.os.Parcelable { public static final android.os.Parcelable$Creator *; }</option>
+					</options>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>net.sf.proguard</groupId>
+						<artifactId>proguard</artifactId>
+						<version>4.4</version>
+						<scope>runtime</scope>
+					</dependency>
+				</dependencies>
+			</plugin>
+
+			<plugin>
+				<groupId>com.jayway.maven.plugins.android.generation2</groupId>
+				<artifactId>maven-android-plugin</artifactId>
+				<version>2.8.4</version>
+				<executions>
+					<execution>
+						<id>zipalign</id>
+						<goals>
+							<goal>zipalign</goal>
+						</goals>
+						<phase>package</phase>
+					</execution>
+				</executions>
+				<configuration>
+					<sdk>
+						<path>${android.sdk.path}</path>
+						<platform>${android.sdk.platform}</platform>
+					</sdk>
+					<deleteConflictingFiles>true</deleteConflictingFiles>
+					<androidManifestFile>${project.basedir}/AndroidManifest.xml</androidManifestFile>
+					<resourceDirectory>${project.basedir}/src/main/resources</resourceDirectory>
+					<sign>
+						<debug>false</debug>
+					</sign>
+				</configuration>
+				<extensions>true</extensions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jarsigner-plugin</artifactId>
+				<version>1.2</version>
+				<executions>
+					<execution>
+						<id>signing</id>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+						<phase>package</phase>
+						<inherited>true</inherited>
+						<configuration>
+							<archiveDirectory/>
+							<includes>
+								<include>target/*.apk</include>
+							</includes>
+							<keystore>${android.keystore}</keystore>
+							<storepass>${android.keystore.password}</storepass>
+							<alias>${android.keystore.key}</alias>
+							<keypass>${android.keystore.key.password}</keypass>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.6</version>
+				<executions>
+					<execution>
+						<id>compile</id>
+						<phase>package</phase>
+						<configuration>
+							<target>
+								<copy file="target/${project.build.finalName}.apk" todir="target/classes"/>
+							</target>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+
+	</build>
+
+</project>
