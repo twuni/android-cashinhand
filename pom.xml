@@ -5,7 +5,7 @@
 
 	<groupId>org.twuni</groupId>
 	<artifactId>android-cashinhand</artifactId>
-	<version>0.2.7-SNAPSHOT</version>
+	<version>0.2.7</version>
 	<packaging>apk</packaging>
 
 	<name>Cash in Hand</name>
