@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="org.twuni.money.wallet" android:versionCode="000200700" android:versionName="0.2.7">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="org.twuni.money.wallet" android:versionCode="000200800" android:versionName="0.2.8">
 
 	<application android:name=".application.WalletApplication" android:icon="@drawable/icon" android:label="@string/cash_in_hand" android:theme="@style/CashInHandTheme">
 
